@@ -73,7 +73,7 @@ create table if not exists public.store_settings (
   logo_url            text,
   banner_url          text,
   -- The storefront's primary colour, "#rrggbb". Null keeps the default theme.
-  brand_color         text check (brand_color ~ '^#[0-9a-fA-F]{6}$'),
+  brand_color         text check (brand_color ~ '^#[0-9a-fA-F]{6}$') default '000000',
 
   -- Contact and legal disclosures. Law 18-05 (10 May 2018) Article 11 requires
   -- these to be published by any Algerian e-commerce activity.

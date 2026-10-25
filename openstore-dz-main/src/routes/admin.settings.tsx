@@ -32,7 +32,7 @@ const DEFAULTS: StoreSettings = {
   address_fr: null,
   logo_url: null,
   banner_url: null,
-  brand_color: null,
+  brand_color: "#000000",
   legal_name: null,
   nif: null,
   rc_number: null,
