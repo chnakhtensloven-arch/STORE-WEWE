@@ -385,6 +385,15 @@
 
 .animate-marquee {
   animation: marquee-ltr var(--marquee-duration, 24s) linear infinite;
+  will-change: transform;
+  /* Force GPU compositing so the animation runs off the main thread. */
+  contain: layout style paint;
+}
+
+@media (max-width: 639px) {
+  .animate-marquee {
+    --marquee-duration: 25s;
+  }
 }
 
 /* ── Commerce components (ported from the reference) ───────────────────────── */
