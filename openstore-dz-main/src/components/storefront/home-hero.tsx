@@ -118,39 +118,31 @@ export function TrustBar({ returnsDays }: { returnsDays: number }) {
   const { t } = useI18n();
 
   const items = [
-    { icon: Banknote, title: t("home.trust.cod.title"), body: t("home.trust.cod.body") },
-    {
-      icon: Truck,
-      title: t("home.trust.delivery.title"),
-      body: t("home.trust.delivery.body"),
-    },
-    {
-      icon: RotateCcw,
-      title: t("home.trust.returns.title", { days: returnsDays }),
-      body: t("home.trust.returns.body"),
-    },
-    { icon: Headphones, title: t("home.trust.support.title"), body: t("home.trust.support.body") },
+    { icon: Banknote, title: t("home.trust.cod.title") },
+    { icon: Truck, title: t("home.trust.delivery.title") },
+    { icon: RotateCcw, title: t("home.trust.returns.title", { days: returnsDays }) },
+    { icon: Headphones, title: t("home.trust.support.title") },
   ] as const;
 
   return (
-    <section className="border-b border-outline bg-surface">
-      <div className="container-page py-8">
+    <section className="border-b border-outline bg-black">
+      <div className="w-full py-8">
         <div className="relative overflow-hidden" aria-label={t("home.trust.cod.title")}>
           {/* Duplicate the track to create a seamless loop. */}
           <div
-            className="flex animate-marquee gap-10"
-            style={{ "--marquee-duration": "20s" } as React.CSSProperties}
+            className="flex animate-marquee"
+            style={{ "--marquee-duration": "25s" } as React.CSSProperties}
           >
             {[...items, ...items].map((item, index) => (
-              <div key={`${item.title}-${index}`} className="flex items-start gap-3 shrink-0">
-                <span className="grid size-10 shrink-0 place-items-center rounded-[10px] border border-outline bg-primary/5 text-primary">
+              <div
+                key={`${item.title}-${index}`}
+                className="flex items-center gap-3 shrink-0 flex-[0_0_33.333%] px-4"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-[20px] border border-outline bg-primary/5 text-white">
                   <item.icon size={18} aria-hidden="true" />
                 </span>
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold">{item.title}</span>
-                  <span className="mt-0.5 block text-xs leading-relaxed text-on-surface-muted">
-                    {item.body}
-                  </span>
+                <span className="text-white font-semibold text-sm sm:text-base truncate">
+                  {item.title}
                 </span>
               </div>
             ))}
