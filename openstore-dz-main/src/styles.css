@@ -373,6 +373,20 @@
   }
 }
 
+/* ── Marquee (infinite auto-scroll) ──────────────────────────────────────── */
+@keyframes marquee-ltr {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-ltr var(--marquee-duration, 24s) linear infinite;
+}
+
 /* ── Commerce components (ported from the reference) ───────────────────────── */
 
 /* Buttons */

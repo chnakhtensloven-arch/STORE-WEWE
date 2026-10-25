@@ -108,7 +108,7 @@ export function HomeHero({
 }
 
 /**
- * Trust bar.
+ * Trust bar — infinite left-to-right marquee.
  *
  * Every claim here is one the platform actually keeps: cash on delivery is the
  * only payment method, coverage is all 58 wilayas, and the return window is a
@@ -134,20 +134,28 @@ export function TrustBar({ returnsDays }: { returnsDays: number }) {
 
   return (
     <section className="border-b border-outline bg-surface">
-      <div className="container-page grid gap-6 py-8 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item) => (
-          <div key={item.title} className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-[10px] border border-outline bg-primary/5 text-primary">
-              <item.icon size={18} aria-hidden="true" />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold">{item.title}</span>
-              <span className="mt-0.5 block text-xs leading-relaxed text-on-surface-muted">
-                {item.body}
-              </span>
-            </span>
+      <div className="container-page py-8">
+        <div className="relative overflow-hidden" aria-label={t("home.trust.cod.title")}>
+          {/* Duplicate the track to create a seamless loop. */}
+          <div
+            className="flex animate-marquee gap-10"
+            style={{ "--marquee-duration": "20s" } as React.CSSProperties}
+          >
+            {[...items, ...items].map((item, index) => (
+              <div key={`${item.title}-${index}`} className="flex items-start gap-3 shrink-0">
+                <span className="grid size-10 shrink-0 place-items-center rounded-[10px] border border-outline bg-primary/5 text-primary">
+                  <item.icon size={18} aria-hidden="true" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold">{item.title}</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-on-surface-muted">
+                    {item.body}
+                  </span>
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </section>
   );
