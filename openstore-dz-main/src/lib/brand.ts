@@ -21,5 +21,11 @@ export function textOn(hex: string): "#111111" | "#ffffff" {
 export function brandCss(color: string | null | undefined): string | null {
   if (!color || !HEX.test(color)) return null;
   const on = textOn(color);
-  return `:root,:root[data-theme]{--primary:${color};--primary-solid:${color};--on-primary:${on};}`;
+  // Light mode: honour the owner's brand colour.
+  // Dark mode: force white primary so buttons remain legible on dark surfaces,
+  // regardless of whatever brand colour the owner picked.
+  return [
+    `:root{--primary:${color};--primary-solid:${color};--on-primary:${on};}`,
+    `:root[data-theme="dark"]{--primary:#ffffff;--primary-solid:#ffffff;--on-primary:#111111;}`,
+  ].join("");
 }

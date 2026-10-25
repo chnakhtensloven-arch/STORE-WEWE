@@ -10,6 +10,10 @@ describe("brand colour", () => {
   it("refuses anything that is not a plain hex colour", () => {
     expect(brandCss("red;}body{display:none")).toBeNull();
     expect(brandCss(null)).toBeNull();
-    expect(brandCss("#c2410c")).toContain("--primary:#c2410c");
+    const out = brandCss("#c2410c");
+    expect(out).toContain("--primary:#c2410c");
+    // Dark-mode override must also be present.
+    expect(out).toContain("--primary:#ffffff");
+    expect(out).toContain("--on-primary:#111111");
   });
 });

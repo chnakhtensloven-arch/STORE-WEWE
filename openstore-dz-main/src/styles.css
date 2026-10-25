@@ -375,24 +375,24 @@
 
 /* ── Marquee (infinite auto-scroll) ──────────────────────────────────────── */
 @keyframes marquee-ltr {
-  from {
-    transform: translateX(-50%);
+  0% {
+    transform: translateX(0%);
   }
-  to {
-    transform: translateX(0);
+  100% {
+    transform: translateX(-50%);
   }
 }
 
 .animate-marquee {
-  animation: marquee-ltr var(--marquee-duration, 24s) linear infinite;
+  animation: marquee-ltr var(--marquee-duration, 10s) linear infinite;
   will-change: transform;
   /* Force GPU compositing so the animation runs off the main thread. */
   contain: layout style paint;
 }
 
 @media (max-width: 639px) {
-  .animate-marquee {
-    --marquee-duration: 25s;
+  .animate-bounce {
+    --marquee-duration: 15s;
   }
 }
 
