@@ -373,7 +373,19 @@
   }
 }
 
-/* ── Marquee (infinite auto-scroll) ──────────────────────────────────────── */
+/* الحاسوب يبقى بالأنيماشن القديمة تاعو وما يصرالو والو */
+
+/* في الهاتف فقط (أقل من 639px): نفعلوا البانوراما المتحركة */
+@media (max-width: 639px) {
+  .animate-marquee {
+    /* أو اسم الكلاس اللي راك داير فيه الحركة في الهاتف */
+    display: flex;
+    width: max-content;
+    animation: marquee-ltr 15s linear infinite;
+    will-change: transform;
+  }
+}
+
 @keyframes marquee-ltr {
   0% {
     transform: translateX(0%);
@@ -383,16 +395,9 @@
   }
 }
 
-.animate-marquee {
-  animation: marquee-ltr var(--marquee-duration, 10s) linear infinite;
-  will-change: transform;
-  /* Force GPU compositing so the animation runs off the main thread. */
-  contain: layout style paint;
-}
-
 @media (max-width: 639px) {
-  .animate-bounce {
-    --marquee-duration: 15s;
+  .animate-marquee {
+    --marquee-duration: 2s;
   }
 }
 
