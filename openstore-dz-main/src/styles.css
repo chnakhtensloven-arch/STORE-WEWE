@@ -1190,6 +1190,27 @@ button.gallery-main {
   }
 }
 
+@media (max-width: 639px) {
+  .trustbar-mobile-marquee {
+    animation: marquee-ltr 22s linear infinite !important;
+  }
+}
+
+@media (min-width: 640px) {
+  html[dir="rtl"] .trustbar-mobile-marquee {
+    animation-name: marquee-rtl !important;
+  }
+}
+
+@keyframes marquee-rtl {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 /* ==========================================================================
    Admin shell
    --------------------------------------------------------------------------

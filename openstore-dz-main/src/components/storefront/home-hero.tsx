@@ -108,7 +108,7 @@ export function HomeHero({
 }
 
 /**
- * Trust bar — infinite left-to-right marquee.
+ * Trust bar — infinite right-to-left marquee.
  *
  * Every claim here is one the platform actually keeps: cash on delivery is the
  * only payment method, coverage is all 58 wilayas, and the return window is a
@@ -125,46 +125,28 @@ export function TrustBar({ returnsDays }: { returnsDays: number }) {
   ] as const;
 
   return (
-    <section className="border-b border-outline bg-black px-4 sm:px-20">
+    <section className="border-b border-outline bg-black px-1 sm:px-20">
       <div className="w-full py-1">
         <div className="relative overflow-hidden" aria-label={t("home.trust.cod.title")}>
-          {/* Desktop (>=640px): static 4-badge row, evenly distributed */}
-          <div className="hidden sm:flex sm:w-full sm:justify-between sm:gap-4">
-            {items.map((item) => (
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent sm:w-24" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent sm:w-24" />
+          <div
+            className="trustbar-mobile-marquee flex w-max animate-marquee"
+            style={{ animation: "marquee-ltr 22s linear infinite" } as React.CSSProperties}
+          >
+            {[...items, ...items].map((item, index) => (
               <div
-                key={item.title}
-                className="flex items-center gap-3 shrink-0 sm:flex-[1_1_0%] px-4"
+                key={`${item.title}-${index}`}
+                className="flex w-screen shrink-0 items-center justify-center gap-3 px-4 sm:w-[25vw]"
               >
-                <span className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10 bg-black text-white">
-                  <item.icon size={18} aria-hidden="true" />
+                <span className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10 bg-white text-black ">
+                  <item.icon size={24} aria-hidden="true" />
                 </span>
-                <span className="text-white font-semibold text-sm sm:text-base p-1 truncate">
+                <span className="truncate p-1 text-sm font-semibold  text-white sm:text-base">
                   {item.title}
                 </span>
               </div>
             ))}
-          </div>
-
-          {/* Mobile (<640px): 1 badge at a time, infinite marquee with black fades */}
-          <div className="sm:hidden relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10 bg-gradient-to-r from-black to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10 bg-gradient-to-l from-black to-transparent" />
-            <div
-              className="flex animate-marquee"
-              style={{ animationDuration: "25s" } as React.CSSProperties}
-            >
-              {[...items, ...items, ...items, ...items].map((item, index) => (
-                <div
-                  key={`${item.title}-${index}`}
-                  className="flex items-center gap-3 shrink-0 w-[100vw] px-4"
-                >
-                  <span className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10 bg-black text-white">
-                    <item.icon size={18} aria-hidden="true" />
-                  </span>
-                  <span className="text-white font-semibold text-sm truncate">{item.title}</span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
