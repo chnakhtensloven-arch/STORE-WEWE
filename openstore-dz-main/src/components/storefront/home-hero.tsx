@@ -5,6 +5,8 @@ import type { CatalogueProduct, StoreSettings } from "@/lib/queries";
 import { productImage } from "@/lib/queries";
 import { localized } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { resolveStoreName } from "@/lib/store-name";
+import { DEFAULT_TRUST_BAR_BG_COLOR, DEFAULT_TRUST_BAR_ICON_COLOR } from "@/lib/store-settings";
 
 /**
  * Storefront hero.
@@ -31,18 +33,46 @@ export function HomeHero({
     .filter((shot): shot is { product: CatalogueProduct; image: string } => shot.image !== null)
     .slice(0, 3);
   const tagline = settings?.tagline?.trim();
+  const localizedTagline = locale === "ar" ? tagline : settings?.tagline_fr?.trim();
+  const mobileHeroImage = settings?.hero_mobile_url ?? "/beach.jpg";
+  const desktopHeroImage = settings?.hero_desktop_url ?? "/desktop.jpg";
+  const heroBackgroundStyle: React.CSSProperties & {
+    "--hero-background-image-mobile": string;
+    "--hero-background-image-desktop": string;
+  } = {
+    backgroundImage: `
+      linear-gradient(rgba(231, 223, 223, 0.18), rgba(8, 3, 3, 0.2)),
+      var(--hero-background-image, url('/home3.jpg'))
+    `,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    "--hero-background-image-mobile": `url("${mobileHeroImage}")`,
+    "--hero-background-image-desktop": `url("${desktopHeroImage}")`,
+  };
 
   return (
-    <section className="overflow-hidden border-b border-outline bg-gradient-to-b from-bg to-bg-dim">
+    <section
+      className="home-hero-background overflow-hidden border-b border-outline"
+      style={heroBackgroundStyle}
+    >
       <div className="container-page grid items-center gap-10 py-10 sm:py-14 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:py-20">
         <div className="flex flex-col items-start">
           <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline bg-surface px-3.5 py-1.5 text-xs font-semibold text-secondary">
             <span className="size-[7px] shrink-0 rounded-full bg-secondary" aria-hidden="true" />
-            {settings?.name ?? "OpenStore DZ"}
+            {resolveStoreName(settings?.name)}
           </span>
 
           <h1 className="mb-4 max-w-xl font-display text-[clamp(32px,5.2vw,60px)] font-semibold leading-[1.06] tracking-[-0.02em]">
-            {(locale === "ar" ? tagline : settings?.tagline_fr?.trim()) || t("home.hero.title")}
+            <span
+              style={
+                localizedTagline && settings?.tagline_color
+                  ? { color: settings.tagline_color }
+                  : undefined
+              }
+            >
+              {localizedTagline || t("home.hero.title")}
+            </span>
           </h1>
 
           <p className="mb-7 max-w-[480px] text-base leading-[1.7] text-on-surface-muted">
@@ -114,8 +144,18 @@ export function HomeHero({
  * only payment method, coverage is all 58 wilayas, and the return window is a
  * real setting. Nothing is decorative marketing copy.
  */
-export function TrustBar({ returnsDays }: { returnsDays: number }) {
+export function TrustBar({
+  returnsDays,
+  backgroundColor,
+  iconColor,
+}: {
+  returnsDays: number;
+  backgroundColor: string | null | undefined;
+  iconColor: string | null | undefined;
+}) {
   const { t } = useI18n();
+  const barColor = backgroundColor ?? DEFAULT_TRUST_BAR_BG_COLOR;
+  const trustIconColor = iconColor ?? DEFAULT_TRUST_BAR_ICON_COLOR;
 
   const items = [
     { icon: Banknote, title: t("home.trust.cod.title") },
@@ -125,11 +165,20 @@ export function TrustBar({ returnsDays }: { returnsDays: number }) {
   ] as const;
 
   return (
-    <section className="border-b border-outline bg-black px-1 sm:px-20">
+    <section
+      className="border-b border-outline px-1 sm:px-20"
+      style={{ backgroundColor: barColor }}
+    >
       <div className="w-full py-1">
         <div className="relative overflow-hidden" aria-label={t("home.trust.cod.title")}>
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent sm:w-24" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent sm:w-24" />
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16"
+            style={{ backgroundImage: `linear-gradient(to right, ${barColor}, transparent)` }}
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16"
+            style={{ backgroundImage: `linear-gradient(to left, ${barColor}, transparent)` }}
+          />
           <div
             className="trustbar-mobile-marquee flex w-max animate-marquee"
             style={{ animation: "marquee-ltr 22s linear infinite" } as React.CSSProperties}
@@ -139,10 +188,10 @@ export function TrustBar({ returnsDays }: { returnsDays: number }) {
                 key={`${item.title}-${index}`}
                 className="flex w-screen shrink-0 items-center justify-center gap-3 px-4 sm:w-[25vw]"
               >
-                <span className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10 bg-white text-black ">
-                  <item.icon size={24} aria-hidden="true" />
+                <span className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10 bg-[#5d9b9b]">
+                  <item.icon size={24} style={{ color: trustIconColor }} aria-hidden="true" />
                 </span>
-                <span className="truncate p-1 text-sm font-semibold  text-white sm:text-base">
+                <span className="truncate p-1 text-sm font-semibold text-[#939a8a] sm:text-base">
                   {item.title}
                 </span>
               </div>

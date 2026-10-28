@@ -22,6 +22,7 @@ import { AuthProvider } from "@/lib/auth";
 import { CartProvider } from "@/lib/cart";
 import { ServiceWorkerRegistrar } from "@/components/service-worker";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_STORE_NAME } from "@/lib/store-name";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   // Runs on the server for the first request and in the browser after, reading
@@ -31,11 +32,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#c2410c" },
+      { name: "theme-color", content: "#000000" },
       // Default title, overridden by whichever route matches. Without this a
       // route that forgets one — or the 404 page — ships an empty <title>, which
       // axe flags and which browsers render as the raw URL.
-      { title: "OpenStore DZ" },
+      { title: DEFAULT_STORE_NAME },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
     ],

@@ -1,26 +1,30 @@
-import { Field, Input, Select, Textarea } from "@/components/ui/form";
+import { Field, Input, Select } from "@/components/ui/form";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { useI18n } from "@/lib/i18n-context";
 import { useCategories } from "@/lib/queries";
 import type { AdminProduct } from "@/lib/admin-products";
+import type { ProductDescription } from "@/lib/product-description";
+import { ProductDescriptionEditor } from "./product-description-editor";
 
 /** The editable text fields of a product. */
 export type ProductDraft = {
   name: string;
   name_fr: string;
-  description: string;
-  description_fr: string;
+  description: ProductDescription;
+  description_fr: ProductDescription;
   category_id: string;
 };
 
 export function ProductFieldsCard({
   draft,
   set,
+  productId,
   status,
   onStatusChange,
 }: {
   draft: ProductDraft;
   set: <K extends keyof ProductDraft>(key: K, value: ProductDraft[K]) => void;
+  productId: string;
   status: string;
   onStatusChange: (status: AdminProduct["status"]) => void;
 }) {
@@ -44,23 +48,18 @@ export function ProductFieldsCard({
             dir="ltr"
           />
         </Field>
-        <Field label={t("common.description")}>
-          <Textarea
-            value={draft.description}
-            onChange={(e) => set("description", e.target.value)}
-            rows={4}
-            maxLength={4000}
-          />
-        </Field>
-        <Field label={t("admin.products.descriptionFr")}>
-          <Textarea
-            value={draft.description_fr}
-            onChange={(e) => set("description_fr", e.target.value)}
-            rows={4}
-            maxLength={4000}
-            dir="ltr"
-          />
-        </Field>
+        <ProductDescriptionEditor
+          label={t("common.description")}
+          productId={productId}
+          blocks={draft.description}
+          onChange={(blocks) => set("description", blocks)}
+        />
+        <ProductDescriptionEditor
+          label={t("admin.products.descriptionFr")}
+          productId={productId}
+          blocks={draft.description_fr}
+          onChange={(blocks) => set("description_fr", blocks)}
+        />
 
         {/* A select, not free text. A typed category used to silently create a
             new one on every typo, which is why categories are entities now. */}

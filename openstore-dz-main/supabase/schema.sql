@@ -65,13 +65,19 @@ create table if not exists public.store_settings (
 
   name                text not null default 'My Shop',
   tagline             text,
+  tagline_color       text check (tagline_color ~ '^#[0-9a-fA-F]{6}$'),
   description         text,
+  description_color  text check (description_color ~ '^#[0-9a-fA-F]{6}$'),
   -- Latin-script versions for French and English visitors. Optional.
   tagline_fr          text,
   description_fr      text,
   address_fr          text,
   logo_url            text,
   banner_url          text,
+  hero_mobile_url     text,
+  hero_desktop_url    text,
+  trust_bar_bg_color  text check (trust_bar_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#3f6550',
+  trust_bar_icon_color text check (trust_bar_icon_color ~ '^#[0-9a-fA-F]{6}$') default '#939a8a',
   -- The storefront's primary colour, "#rrggbb". Null keeps the default theme.
   brand_color         text check (brand_color ~ '^#[0-9a-fA-F]{6}$') default '000000',
 
@@ -117,6 +123,19 @@ create table if not exists public.store_settings (
   created_at          timestamptz not null default now(),
   updated_at          timestamptz not null default now()
 );
+
+-- Keep this schema safe to re-apply when adding settings to an existing shop.
+alter table public.store_settings
+  add column if not exists hero_mobile_url text,
+  add column if not exists hero_desktop_url text,
+  add column if not exists trust_bar_bg_color text
+    check (trust_bar_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#3f6550',
+  add column if not exists trust_bar_icon_color text
+    check (trust_bar_icon_color ~ '^#[0-9a-fA-F]{6}$') default '#939a8a',
+  add column if not exists tagline_color text
+    check (tagline_color ~ '^#[0-9a-fA-F]{6}$'),
+  add column if not exists description_color text
+    check (description_color ~ '^#[0-9a-fA-F]{6}$');
 
 -- Admin accounts. Roles live here, never on the user object itself.
 create table if not exists public.admin_users (

@@ -1,8 +1,10 @@
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, Input, Switch, Textarea } from "@/components/ui/form";
+import { Field, Input, Switch } from "@/components/ui/form";
 import { useI18n } from "@/lib/i18n-context";
 import { ColorField, LogoField } from "./brand-fields";
+import { SettingsIdentityTextFields } from "./settings-identity-text-fields";
 import type { StoreSettings } from "@/lib/queries";
+import { DEFAULT_TRUST_BAR_BG_COLOR, DEFAULT_TRUST_BAR_ICON_COLOR } from "@/lib/store-settings";
 
 /**
  * The form sections on the settings page.
@@ -34,47 +36,27 @@ export function IdentityCard({ form, set }: { form: SettingsDraft; set: Settings
             maxLength={120}
           />
         </Field>
-        <Field label={t("admin.settings.tagline")} className="sm:col-span-2">
-          <Input
-            value={form.tagline ?? ""}
-            onChange={(e) => set("tagline", e.target.value || null)}
-            maxLength={160}
-          />
-        </Field>
-        <Field
-          label={`${t("admin.settings.tagline")} — ${t("admin.settings.latin")}`}
-          hint={t("admin.settings.latinHint")}
-          className="sm:col-span-2"
-        >
-          <Input
-            value={form.tagline_fr ?? ""}
-            onChange={(e) => set("tagline_fr", e.target.value || null)}
-            maxLength={160}
-            dir="ltr"
-          />
-        </Field>
-        <Field label={t("common.description")} className="sm:col-span-2">
-          <Textarea
-            value={form.description ?? ""}
-            onChange={(e) => set("description", e.target.value || null)}
-            rows={3}
-            maxLength={1000}
-          />
-        </Field>
-        <Field
-          label={`${t("common.description")} — ${t("admin.settings.latin")}`}
-          className="sm:col-span-2"
-        >
-          <Textarea
-            value={form.description_fr ?? ""}
-            onChange={(e) => set("description_fr", e.target.value || null)}
-            rows={3}
-            maxLength={1000}
-            dir="ltr"
-          />
-        </Field>
+        <SettingsIdentityTextFields form={form} set={set} />
         <LogoField value={form.logo_url} onChange={(url) => set("logo_url", url)} />
         <ColorField value={form.brand_color} onChange={(color) => set("brand_color", color)} />
+        <Field label={t("admin.settings.trustBarBackground")}>
+          <input
+            type="color"
+            value={form.trust_bar_bg_color ?? DEFAULT_TRUST_BAR_BG_COLOR}
+            onChange={(event) => set("trust_bar_bg_color", event.target.value)}
+            aria-label={t("admin.settings.trustBarBackground")}
+            className="size-10 cursor-pointer rounded-[10px] border border-outline bg-transparent p-1"
+          />
+        </Field>
+        <Field label={t("admin.settings.trustBarIcon")}>
+          <input
+            type="color"
+            value={form.trust_bar_icon_color ?? DEFAULT_TRUST_BAR_ICON_COLOR}
+            onChange={(event) => set("trust_bar_icon_color", event.target.value)}
+            aria-label={t("admin.settings.trustBarIcon")}
+            className="size-10 cursor-pointer rounded-[10px] border border-outline bg-transparent p-1"
+          />
+        </Field>
         <Field label={t("admin.settings.bannerUrl")}>
           <Input
             value={form.banner_url ?? ""}

@@ -113,19 +113,16 @@ and must never carry a `VITE_` prefix.
 
 ---
 
-## 7. Burnt orange palette, on the Commerce Storefront reference system
+## 7. High-contrast black primary, on the Commerce Storefront reference system
 
 **Context.** A colour palette was required. The reference design system's own
 "Commerce Storefront" system (system 02) supplied the token vocabulary, component
 structure, motion, spacing, radius and elevation.
 
-**Decision.** Carry the reference system and its palette: burnt orange primary
-(`#c2410c` light, `#fb923c` dark), a crimson secondary (`#e11d48`) and an amber
-tertiary (`#b45309`). Two values deviate from the reference for contrast, both
-measured rather than assumed. The reference primary `#d9480f` scores 4.29:1
-white-on-orange and 4.02:1 orange-on-cream, under the 4.5:1 AA floor for text below
-18.66px, so `#c2410c` is used: the same hue one step darker, at 5.18:1 and 4.85:1.
-Muted text was darkened from `#78716c` to `#6b6460` for the same reason.
+**Decision.** Use black (`#000000`) as the default primary in light mode and white
+(`#ffffff`) in dark mode to maintain strong contrast across buttons and interactive
+states. Retain the crimson secondary (`#e11d48`) and amber tertiary (`#b45309`).
+Muted text remains darkened from `#78716c` to `#6b6460` for WCAG AA contrast.
 
 **Reason.** OpenStore is a platform, not a brand. Neutral-first chrome lets any
 seller's product photography lead, whatever the vertical. The palette is carried

@@ -7,6 +7,7 @@ import { useStoreSettings } from "@/lib/queries";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
+import { resolveStoreName } from "@/lib/store-name";
 
 /**
  * Storefront header.
@@ -20,7 +21,7 @@ export function SiteHeader() {
   const { data: settings } = useStoreSettings();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const storeName = settings?.name?.trim() || t("app.tagline");
+  const storeName = resolveStoreName(settings?.name);
 
   const links = [
     { to: "/", label: t("nav.home") },

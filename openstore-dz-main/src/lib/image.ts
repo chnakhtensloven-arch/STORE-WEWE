@@ -100,7 +100,7 @@ function extensionFor(type: string): string {
  * a browser holding the old URL cannot serve a stale photo — and it removes any
  * need to sanitise a user-supplied filename.
  */
-export async function uploadProductImage(file: File, productId: string): Promise<UploadOutcome> {
+async function uploadImage(file: File, pathPrefix: string): Promise<UploadOutcome> {
   if (!file.type.startsWith("image/")) {
     return { url: null, error: "That file is not an image." };
   }
@@ -121,7 +121,7 @@ export async function uploadProductImage(file: File, productId: string): Promise
     return { url: null, error: "That image is too large even after resizing." };
   }
 
-  const path = `products/${productId}/${crypto.randomUUID()}.${extensionFor(blob.type)}`;
+  const path = `${pathPrefix}/${crypto.randomUUID()}.${extensionFor(blob.type)}`;
 
   const { error } = await getSupabase()
     .storage.from(BUCKET)
@@ -131,6 +131,14 @@ export async function uploadProductImage(file: File, productId: string): Promise
 
   const { data } = getSupabase().storage.from(BUCKET).getPublicUrl(path);
   return { url: data.publicUrl, error: null };
+}
+
+export function uploadProductImage(file: File, productId: string): Promise<UploadOutcome> {
+  return uploadImage(file, `products/${productId}`);
+}
+
+export function uploadHeroImage(file: File, device: "mobile" | "desktop"): Promise<UploadOutcome> {
+  return uploadImage(file, `store/hero/${device}`);
 }
 
 /**

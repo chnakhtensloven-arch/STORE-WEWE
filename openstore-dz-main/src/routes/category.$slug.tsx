@@ -2,26 +2,30 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { StoreLayout } from "@/components/storefront/store-layout";
 import { CatalogueView } from "@/components/storefront/catalogue-view";
 import { useI18n } from "@/lib/i18n-context";
-import { categoriesQuery, useCategories } from "@/lib/queries";
+import { categoriesQuery, storeSettingsQuery, useCategories } from "@/lib/queries";
 import { localized } from "@/lib/i18n";
 import { EMPTY_FILTERS, cataloguePageQuery } from "@/lib/catalogue";
+import { DEFAULT_STORE_NAME, resolveStoreName } from "@/lib/store-name";
 
 export const Route = createFileRoute("/category/$slug")({
   loader: async ({ context, params }) => {
     const categories = await context.queryClient.ensureQueryData(categoriesQuery()).catch(() => []);
     const category = categories.find((entry) => entry.slug === params.slug);
     if (!category) throw notFound();
+    const settings = await context.queryClient
+      .ensureQueryData(storeSettingsQuery())
+      .catch(() => null);
     // Prefetched so the server sends products rather than an empty grid.
     await context.queryClient
       .ensureQueryData(cataloguePageQuery({ ...EMPTY_FILTERS, categorySlug: category.slug }, 1))
       .catch(() => null);
-    return { category };
+    return { category, storeName: resolveStoreName(settings?.name) };
   },
   head: ({ loaderData, match }) => {
     const category = loaderData?.category;
-    if (!category) return { meta: [{ title: "OpenStore DZ" }] };
+    if (!category) return { meta: [{ title: DEFAULT_STORE_NAME }] };
     const name = localized(match.context.locale, category.name, category.name_fr);
-    const title = `${name} | OpenStore DZ`;
+    const title = `${name} | ${loaderData?.storeName ?? DEFAULT_STORE_NAME}`;
     const description = category.description?.trim() || title;
     return {
       meta: [

@@ -169,12 +169,11 @@ Listed so the remaining scope is visible, with reasons, in `docs/ROADMAP.md`.
   component-CSS system, including the component classes (`.btn`, `.chip`, `.product-card`,
   `.gallery`, `.cart-*`, `.review-card`, `.ds-table`) rather than an approximation rebuilt
   out of utilities.
-- **Palette: burnt orange with a berry accent.** Primary `#c2410c`, secondary `#e11d48`,
-  tertiary `#b45309`.
-- **Two measured deviations from the reference, both for WCAG AA.** The reference primary
-  `#d9480f` scores 4.29:1 white-on-orange and 4.02:1 orange-on-cream, under the 4.5:1
-  floor for text below 18.66px, so it fails on every button label. `#c2410c` is the same
-  hue one step darker and scores 5.18:1 and 4.85:1. Muted text was likewise darkened from
+- **Palette: black primary with a berry accent.** Primary `#000000` in light mode and
+  `#ffffff` in dark mode for contrast, secondary `#e11d48`, tertiary `#b45309`.
+- **Two measured deviations from the reference, both for WCAG AA.** The primary uses
+  black on light surfaces and white on dark surfaces for strong contrast. Muted text was
+  likewise darkened from
   `#78716c` to `#6b6460`. Both are asserted by `e2e/accessibility.spec.ts`.
 - **Arabic typography.** Cairo is added to the font stacks because the reference is
   Latin-only and would otherwise fall back to whatever the operating system has.

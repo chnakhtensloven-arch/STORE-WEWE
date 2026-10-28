@@ -16,12 +16,23 @@ import { EmptyState, LoadingState } from "@/components/ui/feedback";
 import { useI18n } from "@/lib/i18n-context";
 import { updateProduct, useAdminProduct } from "@/lib/admin-products";
 import { useProductPicker } from "@/lib/product-picker";
+import { parseProductDescription, serializeProductDescription } from "@/lib/product-description";
 
 export const Route = createFileRoute("/admin/product/$id")({
   component: ProductEditPage,
 });
 
 type Patch = Parameters<typeof updateProduct>[1];
+
+function fieldsPatch(draft: ProductDraft): Patch {
+  return {
+    name: draft.name.trim(),
+    name_fr: draft.name_fr.trim() || null,
+    description: serializeProductDescription(draft.description),
+    description_fr: serializeProductDescription(draft.description_fr),
+    category_id: draft.category_id.trim() || null,
+  };
+}
 
 function ProductEditPage() {
   const { id } = Route.useParams();
@@ -40,8 +51,8 @@ function ProductEditPage() {
       setDraft({
         name: product.name,
         name_fr: product.name_fr ?? "",
-        description: product.description ?? "",
-        description_fr: product.description_fr ?? "",
+        description: parseProductDescription(product.description),
+        description_fr: parseProductDescription(product.description_fr),
         category_id: product.category_id ?? "",
       });
     }
@@ -72,7 +83,7 @@ function ProductEditPage() {
   if (!draft) return <LoadingState />;
 
   const set = <K extends keyof ProductDraft>(key: K, value: ProductDraft[K]) =>
-    setDraft({ ...draft, [key]: value });
+    setDraft((current) => (current ? { ...current, [key]: value } : current));
 
   const publishable = product.product_variants.length > 0;
   const published = product.status === "published";
@@ -81,15 +92,6 @@ function ProductEditPage() {
     save.mutate({
       status: published ? "draft" : "published",
       ...(published || product.published_at ? {} : { published_at: new Date().toISOString() }),
-    });
-
-  const saveFields = () =>
-    save.mutate({
-      name: draft.name.trim(),
-      name_fr: draft.name_fr.trim() || null,
-      description: draft.description.trim() || null,
-      description_fr: draft.description_fr.trim() || null,
-      category_id: draft.category_id.trim() || null,
     });
 
   return (
@@ -101,7 +103,7 @@ function ProductEditPage() {
         publishable={publishable}
         busy={save.isPending}
         onTogglePublish={togglePublish}
-        onSaveFields={saveFields}
+        onSaveFields={() => save.mutate(fieldsPatch(draft))}
       />
 
       {!publishable && (
@@ -113,6 +115,7 @@ function ProductEditPage() {
       <ProductFieldsCard
         draft={draft}
         set={set}
+        productId={id}
         status={product.status}
         onStatusChange={(status) => save.mutate({ status })}
       />

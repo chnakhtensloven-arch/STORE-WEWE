@@ -9,6 +9,8 @@ import { sizeGuidesQuery } from "@/lib/size-guides";
 import { RelatedProducts } from "@/components/storefront/related-products";
 import { localized } from "@/lib/i18n";
 import { useT } from "@/lib/i18n-context";
+import { DEFAULT_STORE_NAME } from "@/lib/store-name";
+import { productDescriptionText } from "@/lib/product-description";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: async ({ context, params }) => {
@@ -26,13 +28,13 @@ export const Route = createFileRoute("/product/$slug")({
   },
   head: ({ loaderData, match }) => {
     const product = loaderData?.product;
-    if (!product) return { meta: [{ title: "OpenStore DZ" }] };
+    if (!product) return { meta: [{ title: DEFAULT_STORE_NAME }] };
     const locale = match.context.locale;
     const name = localized(locale, product.name, product.name_fr);
     const description =
-      localized(locale, product.description ?? "", product.description_fr)
-        .trim()
-        .slice(0, 155) || name;
+      productDescriptionText(
+        localized(locale, product.description ?? "", product.description_fr),
+      ).slice(0, 155) || name;
     return {
       meta: [
         { title: name },

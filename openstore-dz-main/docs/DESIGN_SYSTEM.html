@@ -29,9 +29,9 @@
         --outline: #e7e0d8;
         --outline-hi: #c9beb2;
 
-        --primary: #c2410c;
+        --primary: #000000;
         --on-primary: #ffffff;
-        --brand-orange: #ea580c;
+        --brand-orange: #000000;
         --secondary: #e11d48;
         --secondary-dim: #be123c;
         --tertiary: #b45309;
@@ -60,9 +60,9 @@
         --outline: #332a21;
         --outline-hi: #4a3e31;
 
-        --primary: #fb923c;
-        --on-primary: #271204;
-        --brand-orange: #fb923c;
+        --primary: #ffffff;
+        --on-primary: #111111;
+        --brand-orange: #ffffff;
         --secondary: #fb7185;
         --secondary-dim: #f43f5e;
         --tertiary: #fbbf24;
@@ -318,18 +318,17 @@
         </div>
         <div class="note">
           <strong>Two values deviate from the reference, both for WCAG AA.</strong> The
-          reference primary <code>#d9480f</code> measures 4.29:1 white-on-orange and 4.02:1
-          orange-on-cream, under the 4.5:1 floor for text below 18.66px, so it fails on every
-          button label. <code>#c2410c</code> is the same hue one step darker and passes both.
-          Muted text was likewise darkened from <code>#78716c</code> to
+          primary is black on light surfaces and white on dark surfaces to preserve strong
+          contrast for buttons, labels, and interactive states. Muted text was likewise darkened from
+          <code>#78716c</code> to
           <code>#6b6460</code>. Both are asserted by <code>e2e/accessibility.spec.ts</code>.
         </div>
       </header>
 
       <h2>Colour</h2>
       <p>
-        One accent carries the brand: burnt orange. Berry and amber exist for emphasis and
-        for states, not as a second brand colour.
+        Black is the default primary in light mode and white is used in dark mode for
+        contrast. Berry and amber remain available for emphasis and status states.
       </p>
       <div class="swatches" id="swatches"></div>
 
@@ -438,8 +437,8 @@
       // The palette is rendered from data so the swatch list cannot drift from the
       // token list next to it in this file.
       const LIGHT = {
-        primary: "#c2410c",
-        "brand-orange": "#ea580c",
+        primary: "#000000",
+        "brand-orange": "#000000",
         secondary: "#e11d48",
         "secondary-dim": "#be123c",
         tertiary: "#b45309",
@@ -453,8 +452,8 @@
         error: "#dc2626",
       };
       const DARK = {
-        primary: "#fb923c",
-        "brand-orange": "#fb923c",
+        primary: "#ffffff",
+        "brand-orange": "#ffffff",
         secondary: "#fb7185",
         "secondary-dim": "#f43f5e",
         tertiary: "#fbbf24",

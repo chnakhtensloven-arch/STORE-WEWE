@@ -16,6 +16,7 @@ import { useDeliveryZones } from "@/lib/delivery";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings, type StoreSettings } from "@/lib/queries";
 import { isPlaceholder, isValidDzPhone, saveAllZones } from "@/lib/setup-status";
+import { isPlaceholderStoreName } from "@/lib/store-name";
 
 export const Route = createFileRoute("/admin/welcome")({
   component: WelcomePage,
@@ -40,7 +41,7 @@ function initialDraft(s: StoreSettings | null, zoneCount: number): SetupDraft {
   const real = (value: string | null | undefined) => (isPlaceholder(value) ? "" : (value ?? ""));
   const name = s?.name ?? "";
   return {
-    name: ["openstore dz", "my shop"].includes(name.trim().toLowerCase()) ? "" : name,
+    name: isPlaceholderStoreName(name) ? "" : name,
     tagline: s?.tagline ?? "",
     logo_url: s?.logo_url ?? null,
     brand_color: s?.brand_color ?? null,

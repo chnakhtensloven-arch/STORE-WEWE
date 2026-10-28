@@ -15,13 +15,19 @@ export type StoreSettings = {
   id: number;
   name: string;
   tagline: string | null;
+  tagline_color: string | null;
   description: string | null;
+  description_color: string | null;
   tagline_fr: string | null;
   description_fr: string | null;
   address_fr: string | null;
   logo_url: string | null;
   banner_url: string | null;
+  hero_mobile_url: string | null;
+  hero_desktop_url: string | null;
   brand_color: string | null;
+  trust_bar_bg_color: string | null;
+  trust_bar_icon_color: string | null;
   legal_name: string | null;
   nif: string | null;
   rc_number: string | null;
@@ -44,6 +50,9 @@ export type StoreSettings = {
   tiktok_url: string | null;
   returns_note: string | null;
 };
+
+export const DEFAULT_TRUST_BAR_BG_COLOR = "#3f6550";
+export const DEFAULT_TRUST_BAR_ICON_COLOR = "#939a8a";
 
 async function fetchSettings(): Promise<StoreSettings | null> {
   const { data, error } = await getSupabase()

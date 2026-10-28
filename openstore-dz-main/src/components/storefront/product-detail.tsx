@@ -15,6 +15,7 @@ import { ProductGallery } from "./product-gallery";
 import { AddToCart, StockLine } from "./product-purchase";
 import { localized } from "@/lib/i18n";
 import { ColourPicker, SizePicker } from "./variant-picker";
+import { parseProductDescription } from "@/lib/product-description";
 
 /**
  * Product page layout.
@@ -51,61 +52,87 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   };
 
   const rating = reviews ? averageRating(reviews) : null;
-  const description = product.description
-    ? localized(locale, product.description, product.description_fr)
-    : product.description_fr;
+  const description = localized(locale, product.description ?? "", product.description_fr);
+  const descriptionBlocks = parseProductDescription(description);
+  const hasDescription = descriptionBlocks.some(
+    (block) => block.type === "image" || block.text.trim().length > 0,
+  );
   const name = localized(locale, product.name, product.name_fr);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-      <ProductGallery
-        images={images}
-        alt={choice.colour ? `${name} — ${choice.colour}` : name}
-        active={activeImage}
-        onSelect={setActiveImage}
-      />
+    <div className="flex min-w-0 flex-col gap-10">
+      <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-12">
+        <ProductGallery
+          images={images}
+          alt={choice.colour ? `${name} — ${choice.colour}` : name}
+          active={activeImage}
+          onSelect={setActiveImage}
+        />
 
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-2">
-          <h1 className="font-display text-2xl font-semibold sm:text-3xl">{name}</h1>
-          {reviews && reviews.length > 0 && (
-            <span className="flex items-center gap-2">
-              <StarRating value={rating ?? 0} />
-              <span className="text-sm text-on-surface-muted">
-                {t("reviews.count", { count: reviews.length })}
+        <div className="flex min-w-0 flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-display text-2xl font-semibold sm:text-3xl">{name}</h1>
+            {reviews && reviews.length > 0 && (
+              <span className="flex items-center gap-2">
+                <StarRating value={rating ?? 0} />
+                <span className="text-sm text-on-surface-muted">
+                  {t("reviews.count", { count: reviews.length })}
+                </span>
               </span>
-            </span>
-          )}
-        </div>
-
-        <StockLine selected={selected} hasStock={(selected?.stock ?? 0) > 0} />
-
-        <ColourPicker colours={colours} selected={choice.colour} onSelect={pickColour} />
-        <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
-
-        {stockable.length > 0 && selected && selected.stock > 0 && (
-          <AddToCart
-            product={product}
-            name={name}
-            selected={selected}
-            images={images}
-            quantity={quantity}
-            setQuantity={setQuantity}
-          />
-        )}
-
-        {description && (
-          <div className="flex flex-col gap-2 border-t border-outline pt-5">
-            <h2 className="font-display text-base font-semibold">{t("store.description")}</h2>
-            <p className="whitespace-pre-line text-sm text-on-surface-muted">{description}</p>
+            )}
           </div>
-        )}
 
-        <p className="flex items-center gap-2 rounded-[10px] bg-surface-mid px-4 py-3 text-xs text-on-surface-muted">
-          <ShieldCheck size={15} className="shrink-0 text-primary" aria-hidden="true" />
-          {t("checkout.codBody")}
-        </p>
+          <StockLine selected={selected} hasStock={(selected?.stock ?? 0) > 0} />
+
+          <ColourPicker colours={colours} selected={choice.colour} onSelect={pickColour} />
+          <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
+
+          {stockable.length > 0 && selected && selected.stock > 0 && (
+            <AddToCart
+              product={product}
+              name={name}
+              selected={selected}
+              images={images}
+              quantity={quantity}
+              setQuantity={setQuantity}
+            />
+          )}
+
+          <p className="flex items-center gap-2 rounded-[10px] bg-surface-mid px-4 py-3 text-xs text-on-surface-muted">
+            <ShieldCheck size={15} className="shrink-0 text-primary" aria-hidden="true" />
+            {t("checkout.codBody")}
+          </p>
+        </div>
       </div>
+
+      {hasDescription && (
+        <section className="flex min-w-0 flex-col gap-4 border-t border-outline pt-6">
+          <h2 className="font-display text-xl font-semibold">{t("store.description")}</h2>
+          <div className="flex min-w-0 flex-col gap-5">
+            {descriptionBlocks.map((block, index) =>
+              block.type === "text" ? (
+                <p
+                  key={block.id}
+                  className="whitespace-pre-line break-words text-sm text-on-surface-muted"
+                >
+                  {block.text}
+                </p>
+              ) : (
+                <img
+                  key={block.id}
+                  src={block.url}
+                  alt={block.alt}
+                  className={`block h-auto w-full max-w-full object-contain ${
+                    descriptionBlocks[index - 1]?.type === "image" ? "-mt-5" : ""
+                  }`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ),
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

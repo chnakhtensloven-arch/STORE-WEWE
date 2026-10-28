@@ -1,5 +1,6 @@
 import { getSupabase } from "./supabase/client";
 import type { StoreSettings } from "./store-settings";
+import { isPlaceholderStoreName } from "./store-name";
 import { WILAYAS } from "./wilayas";
 
 /**
@@ -11,8 +12,6 @@ import { WILAYAS } from "./wilayas";
  * until each is real.
  */
 export type SetupGap = "name" | "phone" | "whatsapp" | "delivery" | "legal";
-
-const DEMO_NAMES = new Set(["", "my shop", "openstore dz"]);
 
 /** Mirrors `is_valid_dz_phone()` in schema.sql: mobile or landline, local or +213. */
 export function isValidDzPhone(raw: string | null | undefined): boolean {
@@ -34,7 +33,7 @@ export function isPlaceholder(value: string | null | undefined): boolean {
 export function setupGaps(settings: StoreSettings | null, zoneCount: number): SetupGap[] {
   if (!settings) return [];
   const gaps: SetupGap[] = [];
-  if (DEMO_NAMES.has(settings.name.trim().toLowerCase())) gaps.push("name");
+  if (isPlaceholderStoreName(settings.name)) gaps.push("name");
   if (!isValidDzPhone(settings.phone) || isPlaceholder(settings.phone)) gaps.push("phone");
   if (isPlaceholder(settings.whatsapp)) gaps.push("whatsapp");
   if (zoneCount === 0) gaps.push("delivery");

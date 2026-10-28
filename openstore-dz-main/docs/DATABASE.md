@@ -97,7 +97,7 @@ grant update (customer_name, phone, wilaya, commune, address, note, status,
 
 | Table              | Holds                                                       | Public read    | Admin write |
 | ------------------ | ----------------------------------------------------------- | -------------- | ----------- |
-| `store_settings`   | name, legal disclosures, contact, Guepex origin wilaya      | yes            | yes         |
+| `store_settings`   | shop identity, Hero images, legal disclosures and commerce settings | yes     | yes         |
 | `admin_users`      | shop owner and staff                                        | no             | yes         |
 | `products`         | single items and packs                                      | published only | yes         |
 | `product_variants` | size, colour, price, stock                                  | yes            | yes         |
@@ -134,13 +134,19 @@ length, range and format rules are enforced in BEFORE INSERT triggers on `orders
 
 ## Storage
 
-One public bucket, `product-media`, for product and review imagery. Public read is the
+One public bucket, `product-media`, for product, review and Hero imagery. Public read is the
 point: image URLs must resolve in a `<img>` tag without a session.
 
 - Read: public, by design.
 - Write: admin only, enforced by policy on `storage.objects`.
 - API-level object listing stays closed. A shop owner should not be able to enumerate
   every file in the bucket.
+
+Hero image URLs are stored in `store_settings.hero_mobile_url` and
+`store_settings.hero_desktop_url`. Both are nullable; the storefront uses `/home3.jpg`
+when a URL is not set. To upgrade an existing database, re-apply the idempotent
+`supabase/schema.sql`; its `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` statements add
+these fields without changing existing settings or access policies.
 
 ## Seed data
 

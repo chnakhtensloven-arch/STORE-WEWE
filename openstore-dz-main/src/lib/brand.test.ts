@@ -12,8 +12,14 @@ describe("brand colour", () => {
     expect(brandCss(null)).toBeNull();
     const out = brandCss("#c2410c");
     expect(out).toContain("--primary:#c2410c");
+    expect(out).toContain("--brand-orange:#c2410c");
+    expect(out).toContain("--scroll-thumb-hi:#c2410c");
+    expect(out).toContain("--table-header-fg:#c2410c");
+    expect(out).toContain("--primary-glow:rgba(194, 65, 12, 0.18)");
+    expect(out).toContain("--toggle-border:rgba(194, 65, 12, 0.22)");
     // Dark-mode override must also be present.
     expect(out).toContain("--primary:#ffffff");
     expect(out).toContain("--on-primary:#111111");
+    expect(out).toContain("--primary-glow:rgba(255, 255, 255, 0.2)");
   });
 });

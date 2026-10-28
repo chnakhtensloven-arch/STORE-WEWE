@@ -2,6 +2,7 @@ import { formatDzd } from "@/lib/format";
 import { WILAYAS } from "@/lib/wilayas";
 import type { AdminOrder } from "@/lib/admin";
 import type { StoreSettings } from "@/lib/queries";
+import { resolveStoreName } from "@/lib/store-name";
 
 /**
  * One shipping label, laid out like the carriers' own: who sends, who receives,
@@ -33,7 +34,7 @@ export function ShippingLabel({
         <div className="sl-from">
           {settings?.logo_url && <img src={settings.logo_url} alt="" className="sl-logo" />}
           <p className="sl-k">Expéditeur</p>
-          <p className="sl-strong">{settings?.name}</p>
+          <p className="sl-strong">{resolveStoreName(settings?.name)}</p>
           {settings?.address_fr || settings?.address ? (
             <p>{settings?.address_fr ?? settings?.address}</p>
           ) : null}

@@ -44,20 +44,15 @@
   --outline: #e7e0d8;
   --outline-hi: #c9beb2;
 
-  /* One deliberate deviation from the reference palette, measured rather than
-     guessed. The reference primary #d9480f scores 4.29:1 for white-on-orange and
-     4.02:1 for orange-on-cream, and WCAG AA requires 4.5:1 for text below 18.66px.
-     It therefore fails on every button label and every accented caption.
-     #c2410c is the same hue one step darker: 5.18:1 with white and 4.85:1 on the
-     cream background, passing both. The brand still reads as burnt orange; it
-     just stops failing axe. Verified by e2e/accessibility.spec.ts. */
-  --primary: #c2410c;
-  --primary-solid: #c2410c;
+  /* Black provides strong contrast on the light surfaces, including white
+     button labels and primary-colored text on the cream background. */
+  --primary: #000000;
+  --primary-solid: #000000;
   --on-primary: #ffffff;
-  --primary-glow: rgba(194, 65, 12, 0.18);
-  --primary-glow-sm: rgba(194, 65, 12, 0.08);
+  --primary-glow: rgba(0, 0, 0, 0.18);
+  --primary-glow-sm: rgba(0, 0, 0, 0.08);
 
-  --brand-orange: #ea580c;
+  --brand-orange: #000000;
   --secondary: #e11d48;
   --secondary-dim: #be123c;
   --on-secondary: #ffffff;
@@ -79,11 +74,11 @@
   --nav-bg: #ffffff;
   --scroll-track: #f3efeb;
   --scroll-thumb: #ddd3c7;
-  --scroll-thumb-hi: #d9480f;
-  --toggle-bg: rgba(217, 72, 15, 0.06);
-  --toggle-border: rgba(217, 72, 15, 0.22);
+  --scroll-thumb-hi: #000000;
+  --toggle-bg: rgba(0, 0, 0, 0.06);
+  --toggle-border: rgba(0, 0, 0, 0.22);
   --table-header-bg: #f0ebe6;
-  --table-header-fg: #9a3412;
+  --table-header-fg: #000000;
   --table-row-bg: #ffffff;
   --table-row-hover: #faf7f4;
   --table-border: #e7e0d8;
@@ -103,13 +98,13 @@
   --outline: #0c0a08;
   --outline-hi: #0d0b08;
 
-  --primary: #fb923c;
-  --primary-solid: #fb923c;
-  --on-primary: #271204;
-  --primary-glow: rgba(251, 146, 60, 0.2);
-  --primary-glow-sm: rgba(251, 146, 60, 0.1);
+  --primary: #ffffff;
+  --primary-solid: #ffffff;
+  --on-primary: #111111;
+  --primary-glow: rgba(255, 255, 255, 0.2);
+  --primary-glow-sm: rgba(255, 255, 255, 0.1);
 
-  --brand-orange: #fb923c;
+  --brand-orange: #ffffff;
   --secondary: #fb7185;
   --secondary-dim: #f43f5e;
   --on-secondary: #2a050e;
@@ -128,11 +123,11 @@
   --nav-bg: #100c08;
   --scroll-track: #1d1712;
   --scroll-thumb: #352b21;
-  --scroll-thumb-hi: #fb923c;
-  --toggle-bg: rgba(251, 146, 60, 0.08);
-  --toggle-border: rgba(251, 146, 60, 0.25);
+  --scroll-thumb-hi: #ffffff;
+  --toggle-bg: rgba(255, 255, 255, 0.08);
+  --toggle-border: rgba(255, 255, 255, 0.25);
   --table-header-bg: #241d16;
-  --table-header-fg: #fb923c;
+  --table-header-fg: #ffffff;
   --table-row-bg: #16110c;
   --table-row-hover: #1d1712;
   --table-border: #332a21;
@@ -383,6 +378,7 @@
     width: max-content;
     animation: marquee-ltr 15s linear infinite;
     will-change: transform;
+    
   }
 }
 
@@ -1319,6 +1315,10 @@ html[dir="rtl"] {
   opacity: 1;
 }
 
+.home-hero-background {
+  --hero-background-image: var(--hero-background-image-desktop, url("/home3.jpg"));
+}
+
 .admin-nav-item.active {
   color: var(--primary);
   transform: translateX(var(--nav-nudge));
@@ -1419,6 +1419,10 @@ html[dir="rtl"] {
 }
 
 @media (max-width: 1023px) {
+  .home-hero-background {
+    --hero-background-image: var(--hero-background-image-mobile, url("/home3.jpg"));
+  }
+
   .admin-page {
     margin-inline-start: 0;
   }

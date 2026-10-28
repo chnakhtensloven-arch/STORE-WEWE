@@ -9,7 +9,7 @@
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#faf7f4",
-  "theme_color": "#d9480f",
+  "theme_color": "#000000",
   "categories": ["shopping", "business"],
   "icons": [
     {

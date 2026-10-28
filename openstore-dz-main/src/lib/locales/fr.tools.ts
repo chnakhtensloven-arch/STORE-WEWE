@@ -94,7 +94,7 @@ export const frTools = {
   "admin.brand.logo": "Logo (facultatif)",
   "admin.brand.logoHint":
     "Sans logo, seul le nom de votre boutique s’affiche. C’est très bien aussi.",
-  "admin.brand.upload": "Téléverser le logo",
+  "admin.brand.upload": "add an image",
   "admin.brand.replace": "Remplacer",
   "admin.brand.color": "Couleur de la boutique",
   "admin.brand.custom": "Autre couleur",

@@ -107,7 +107,7 @@ export function ColorField({
         ))}
         <input
           type="color"
-          value={value ?? "#c2410c"}
+          value={value ?? "#000000"}
           onChange={(event) => onChange(event.target.value)}
           aria-label={t("admin.brand.custom")}
           className="size-9 cursor-pointer rounded-full border border-outline bg-transparent"

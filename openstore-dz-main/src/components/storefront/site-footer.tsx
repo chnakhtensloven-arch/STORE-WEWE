@@ -4,6 +4,10 @@ import { useStoreSettings } from "@/lib/queries";
 import { SocialLinks } from "./social-links";
 import { formatDzd } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
+import { resolveStoreName } from "@/lib/store-name";
+
+const textColorStyle = (color: string | null | undefined): React.CSSProperties | undefined =>
+  color ? { color } : undefined;
 
 /**
  * Storefront footer.
@@ -43,9 +47,23 @@ export function SiteFooter() {
     <footer className="mt-16 border-t border-outline bg-section-alt">
       <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
         <div className="flex flex-col gap-2">
-          <p className="font-display text-lg font-semibold">{settings?.name ?? t("app.name")}</p>
-          {tagline && <p className="text-sm text-on-surface-muted">{tagline}</p>}
-          {description && <p className="max-w-sm text-sm text-on-surface-muted">{description}</p>}
+          <p className="font-display text-lg font-semibold">{resolveStoreName(settings?.name)}</p>
+          {tagline && (
+            <p
+              className="text-sm text-on-surface-muted"
+              style={textColorStyle(settings?.tagline_color)}
+            >
+              {tagline}
+            </p>
+          )}
+          {description && (
+            <p
+              className="max-w-sm text-sm text-on-surface-muted"
+              style={textColorStyle(settings?.description_color)}
+            >
+              {description}
+            </p>
+          )}
         </div>
 
         {hasLegal && (

@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { Button } from "@/components/ui/button";
 import { LoadingState } from "@/components/ui/feedback";
+import { BrandStyle } from "@/components/storefront/brand-style";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n-context";
 
@@ -81,6 +82,7 @@ function AdminLayout() {
 
   return (
     <div className="admin-shell">
+      <BrandStyle />
       <AdminSidebar
         open={navOpen}
         collapsed={collapsed}

@@ -13,10 +13,13 @@ import {
   type SettingsSetter,
 } from "@/components/admin/settings-cards";
 import { MarketingCard } from "@/components/admin/marketing-card";
+import { HeroImageFields } from "@/components/admin/hero-image-fields";
 import { ExportSettings } from "@/components/admin/export-settings";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings, type StoreSettings } from "@/lib/queries";
+import { DEFAULT_TRUST_BAR_BG_COLOR, DEFAULT_TRUST_BAR_ICON_COLOR } from "@/lib/store-settings";
 import { saveStoreSettings } from "@/lib/admin";
+import { DEFAULT_STORE_NAME } from "@/lib/store-name";
 
 export const Route = createFileRoute("/admin/settings")({
   component: SettingsPage,
@@ -24,15 +27,21 @@ export const Route = createFileRoute("/admin/settings")({
 
 const DEFAULTS: StoreSettings = {
   id: 1,
-  name: "",
+  name: DEFAULT_STORE_NAME,
   tagline: null,
+  tagline_color: null,
   description: null,
+  description_color: null,
   tagline_fr: null,
   description_fr: null,
   address_fr: null,
   logo_url: null,
   banner_url: null,
+  hero_mobile_url: null,
+  hero_desktop_url: null,
   brand_color: "#000000",
+  trust_bar_bg_color: DEFAULT_TRUST_BAR_BG_COLOR,
+  trust_bar_icon_color: DEFAULT_TRUST_BAR_ICON_COLOR,
   legal_name: null,
   nif: null,
   rc_number: null,
@@ -101,6 +110,7 @@ function SettingsPage() {
       </div>
 
       <IdentityCard form={form} set={set} />
+      <HeroImageFields form={form} set={set} />
       <LegalCard form={form} set={set} />
       <MarketingCard form={form} set={set} />
       <CommerceCard form={form} set={set} />

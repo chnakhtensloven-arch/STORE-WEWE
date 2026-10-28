@@ -14,6 +14,7 @@ import { supabaseConfigProblem } from "@/lib/supabase/client";
 import { reviewsQuery, storeSettingsQuery } from "@/lib/queries";
 import { EMPTY_FILTERS, cataloguePageQuery, useCataloguePage } from "@/lib/catalogue";
 import { useI18n } from "@/lib/i18n-context";
+import { resolveStoreName } from "@/lib/store-name";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -36,9 +37,9 @@ export const Route = createFileRoute("/")({
   head: ({ loaderData, match }) => {
     const s = loaderData?.settings;
     const ar = match.context.locale === "ar";
-    const name = s?.name?.trim();
+    const name = resolveStoreName(s?.name);
     const tagline = (ar ? s?.tagline : s?.tagline_fr)?.trim();
-    const title = name ? `${name}${tagline ? ` — ${tagline}` : ""}` : "OpenStore DZ";
+    const title = `${name}${tagline ? ` — ${tagline}` : ""}`;
     const description =
       (ar ? s?.description : s?.description_fr)?.trim() ||
       (ar
@@ -69,7 +70,7 @@ function Home() {
   if (configProblem) {
     return (
       <main className="container-page flex min-h-dvh flex-col items-center justify-center gap-6 py-20 text-center">
-        <h1 className="font-display text-3xl font-semibold">{settings?.name ?? "OpenStore DZ"}</h1>
+        <h1 className="font-display text-3xl font-semibold">{resolveStoreName(settings?.name)}</h1>
         <SetupCheck />
       </main>
     );
@@ -81,7 +82,11 @@ function Home() {
   return (
     <StoreLayout>
       <HomeHero settings={settings} products={list} />
-      <TrustBar returnsDays={settings?.returns_days ?? 14} />
+      <TrustBar
+        returnsDays={settings?.returns_days ?? 14}
+        backgroundColor={settings?.trust_bar_bg_color}
+        iconColor={settings?.trust_bar_icon_color}
+      />
 
       <section id="catalogue" className="container-page scroll-mt-20 py-12">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
@@ -123,7 +128,7 @@ function Home() {
       <CategoryStrip />
       <PromoBand threshold={settings?.free_shipping_threshold ?? 0} />
       <ReviewWall />
-      <ClosingCta storeName={settings?.name ?? "OpenStore DZ"} />
+      <ClosingCta storeName={resolveStoreName(settings?.name)} />
     </StoreLayout>
   );
 }
