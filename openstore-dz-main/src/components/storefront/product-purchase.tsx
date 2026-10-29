@@ -155,7 +155,7 @@ export function AddToCart({
           </button>
         </span>
 
-        <Button variant="berry" size="lg" onClick={handleAdd} className="flex-1">
+        <Button variant="berry" size="lg" onClick={handleAdd} className="hidden flex-1 sm:flex">
           <Package size={18} aria-hidden="true" />
           {t("store.addToCart")}
         </Button>
@@ -174,6 +174,13 @@ export function AddToCart({
           {t("store.orderViaWhatsapp")}
         </a>
       )}
+
+      <div className="fixed inset-x-0 bottom-0 z-[220] border-t border-outline bg-surface px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:hidden">
+        <Button variant="berry" size="lg" onClick={handleAdd} className="w-full">
+          <Package size={18} aria-hidden="true" />
+          {t("store.addToCart")}
+        </Button>
+      </div>
     </div>
   );
 }

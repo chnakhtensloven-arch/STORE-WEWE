@@ -33,6 +33,7 @@ export function VariantRow({
       <DraftFields draft={draft} onChange={setDraft} />
 
       <div className="flex flex-wrap items-center gap-4">
+        <VariantImages variant={variant} />
         <Switch
           label={t("common.active")}
           checked={active}
@@ -47,8 +48,6 @@ export function VariantRow({
           {t("common.delete")}
         </Button>
       </div>
-
-      <VariantImages variant={variant} />
     </li>
   );
 }

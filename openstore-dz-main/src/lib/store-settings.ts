@@ -28,6 +28,7 @@ export type StoreSettings = {
   brand_color: string | null;
   trust_bar_bg_color: string | null;
   trust_bar_icon_color: string | null;
+  trust_bar_icon_bg_color: string | null;
   legal_name: string | null;
   nif: string | null;
   rc_number: string | null;
@@ -49,10 +50,12 @@ export type StoreSettings = {
   facebook_url: string | null;
   tiktok_url: string | null;
   returns_note: string | null;
+  featured_product_ids: string[];
 };
 
 export const DEFAULT_TRUST_BAR_BG_COLOR = "#3f6550";
 export const DEFAULT_TRUST_BAR_ICON_COLOR = "#939a8a";
+export const DEFAULT_TRUST_BAR_ICON_BG_COLOR = "#5d9b9b";
 
 async function fetchSettings(): Promise<StoreSettings | null> {
   const { data, error } = await getSupabase()

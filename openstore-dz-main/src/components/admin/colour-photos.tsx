@@ -1,39 +1,13 @@
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Camera, Loader2, X } from "lucide-react";
+import { Camera, Loader2, RefreshCw, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n-context";
-import { uploadProductImage } from "@/lib/image";
-import { attachToVariants, detachFromVariants } from "@/lib/colour-photos";
+import { deleteProductImage, uploadProductImage } from "@/lib/image";
+import { attachToVariants, detachFromVariants, replaceColourImage } from "@/lib/colour-photos";
 import type { AdminVariant } from "@/lib/admin-products";
-
-type Group = {
-  colour: string | null;
-  hex: string | null;
-  variants: AdminVariant[];
-  urls: string[];
-};
-
-/** Variants by colour, each with its photos de-duplicated across sizes. */
-function groupByColour(variants: AdminVariant[]): Group[] {
-  const groups = new Map<string, Group>();
-  for (const variant of variants) {
-    const key = variant.color_name ?? "";
-    const group = groups.get(key) ?? {
-      colour: variant.color_name,
-      hex: variant.color_hex,
-      variants: [],
-      urls: [],
-    };
-    group.variants.push(variant);
-    for (const image of [...variant.variant_images].sort((a, b) => a.sort_order - b.sort_order)) {
-      if (!group.urls.includes(image.url)) group.urls.push(image.url);
-    }
-    groups.set(key, group);
-  }
-  return [...groups.values()];
-}
+import { groupVariantsByColour, type ColourPhotoGroup } from "@/lib/colour-photo-groups";
 
 /**
  * Photos by colour.
@@ -51,7 +25,7 @@ export function ColourPhotos({
   variants: AdminVariant[];
 }) {
   const { t } = useI18n();
-  const groups = groupByColour(variants);
+  const groups = groupVariantsByColour(variants);
   if (groups.length === 0) return null;
 
   return (
@@ -64,10 +38,9 @@ export function ColourPhotos({
   );
 }
 
-function ColourRow({ productId, group }: { productId: string; group: Group }) {
+function ColourRow({ productId, group }: { productId: string; group: ColourPhotoGroup }) {
   const { t } = useI18n();
   const queryClient = useQueryClient();
-  const input = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const ids = group.variants.map((v) => v.id);
   const invalidate = () =>
@@ -78,23 +51,56 @@ function ColourRow({ productId, group }: { productId: string; group: Group }) {
   const addFiles = async (files: File[]) => {
     setUploading(true);
     let added = 0;
-    for (const [index, file] of files.entries()) {
-      const { url, error } = await uploadProductImage(file, productId);
-      if (error || !url) {
-        toast.error(`${file.name}: ${error ?? t("common.somethingWrong")}`);
-        continue;
+    try {
+      for (const [index, file] of files.entries()) {
+        const { url, error } = await uploadProductImage(file, productId);
+        if (error || !url) {
+          toast.error(`${file.name}: ${error ?? t("common.somethingWrong")}`);
+          continue;
+        }
+        try {
+          await attachToVariants(ids, url, group.urls.length + index);
+          added += 1;
+        } catch (attachError) {
+          await deleteProductImage(url);
+          toast.error(
+            attachError instanceof Error ? attachError.message : t("common.somethingWrong"),
+          );
+        }
       }
-      try {
-        await attachToVariants(ids, url, group.urls.length + index);
-        added += 1;
-      } catch (attachError) {
-        toast.error((attachError as Error).message);
-      }
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
     if (added > 0) {
       invalidate();
       toast.success(t("admin.photos.added", { count: added }));
+    }
+  };
+
+  const replaceImage = async (file: File, oldUrl: string) => {
+    setUploading(true);
+    try {
+      const { url, error } = await uploadProductImage(file, productId);
+      if (error || !url) {
+        toast.error(`${t("admin.images.replaceFailed")}: ${error ?? t("common.somethingWrong")}`);
+        return;
+      }
+      try {
+        await replaceColourImage(ids, oldUrl, url);
+        invalidate();
+        toast.success(t("admin.images.replaced"));
+      } catch (replaceError) {
+        await deleteProductImage(url);
+        throw replaceError;
+      }
+    } catch (replaceError) {
+      toast.error(
+        `${t("admin.images.replaceFailed")}: ${
+          replaceError instanceof Error ? replaceError.message : t("common.somethingWrong")
+        }`,
+      );
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -120,51 +126,112 @@ function ColourRow({ productId, group }: { productId: string; group: Group }) {
             .filter(Boolean)
             .join(" · ")}
         </span>
-        <input
-          ref={input}
-          type="file"
-          accept="image/*"
-          multiple
-          className="sr-only"
-          onChange={(event) => {
-            void addFiles(Array.from(event.target.files ?? []));
-            event.target.value = "";
-          }}
-        />
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          className="ms-auto"
-          disabled={uploading}
-          onClick={() => input.current?.click()}
-        >
-          {uploading ? <Loader2 size={15} className="animate-spin" /> : <Camera size={15} />}
-          {uploading ? t("admin.images.uploading") : t("admin.images.add")}
-        </Button>
+        <ColourPhotoUploadControls uploading={uploading} addFiles={addFiles} />
       </div>
       {group.urls.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {group.urls.map((url) => (
-            <span key={url} className="relative">
-              <img
-                src={url}
-                alt=""
-                className="size-16 rounded-[10px] border border-outline object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => remove.mutate(url)}
-                disabled={remove.isPending}
-                aria-label={t("common.delete")}
-                className="absolute -end-1.5 -top-1.5 grid size-6 place-items-center rounded-full bg-error text-white"
-              >
-                <X size={13} aria-hidden="true" />
-              </button>
-            </span>
+            <ColourPhotoTile
+              key={url}
+              url={url}
+              disabled={remove.isPending || uploading}
+              replaceLabel={t("admin.images.replace")}
+              deleteLabel={t("common.delete")}
+              onReplace={(file) => void replaceImage(file, url)}
+              onDelete={() => remove.mutate(url)}
+            />
           ))}
         </div>
       )}
     </section>
+  );
+}
+
+function ColourPhotoTile({
+  url,
+  disabled,
+  replaceLabel,
+  deleteLabel,
+  onReplace,
+  onDelete,
+}: {
+  url: string;
+  disabled: boolean;
+  replaceLabel: string;
+  deleteLabel: string;
+  onReplace: (file: File) => void;
+  onDelete: () => void;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+  return (
+    <span className="relative">
+      <img src={url} alt="" className="size-16 rounded-[10px] border border-outline object-cover" />
+      <input
+        ref={input}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) onReplace(file);
+          event.target.value = "";
+        }}
+      />
+      <button
+        type="button"
+        onClick={() => input.current?.click()}
+        disabled={disabled}
+        aria-label={replaceLabel}
+        className="absolute -bottom-1.5 -start-1.5 grid size-6 place-items-center rounded-full bg-surface-high text-on-surface"
+      >
+        <RefreshCw size={13} aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        onClick={onDelete}
+        disabled={disabled}
+        aria-label={deleteLabel}
+        className="absolute -end-1.5 -top-1.5 grid size-6 place-items-center rounded-full bg-error text-white"
+      >
+        <X size={13} aria-hidden="true" />
+      </button>
+    </span>
+  );
+}
+
+function ColourPhotoUploadControls({
+  uploading,
+  addFiles,
+}: {
+  uploading: boolean;
+  addFiles: (files: File[]) => void;
+}) {
+  const { t } = useI18n();
+  const input = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <input
+        ref={input}
+        type="file"
+        accept="image/*"
+        multiple
+        className="sr-only"
+        onChange={(event) => {
+          addFiles(Array.from(event.target.files ?? []));
+          event.target.value = "";
+        }}
+      />
+      <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        className="ms-auto"
+        disabled={uploading}
+        onClick={() => input.current?.click()}
+      >
+        {uploading ? <Loader2 size={15} className="animate-spin" /> : <Camera size={15} />}
+        {uploading ? t("admin.images.uploading") : t("admin.images.add")}
+      </Button>
+    </>
   );
 }

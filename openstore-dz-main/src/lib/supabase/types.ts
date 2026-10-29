@@ -611,6 +611,8 @@ export type Database = {
           brand_color: string | null;
           trust_bar_bg_color: string | null;
           trust_bar_icon_color: string | null;
+          trust_bar_icon_bg_color: string | null;
+          featured_product_ids: string[];
           created_at: string;
           address_fr: string | null;
           description_fr: string | null;
@@ -652,6 +654,8 @@ export type Database = {
           brand_color?: string | null;
           trust_bar_bg_color?: string | null;
           trust_bar_icon_color?: string | null;
+          trust_bar_icon_bg_color?: string | null;
+          featured_product_ids?: string[];
           created_at?: string;
           address_fr?: string | null;
           description_fr?: string | null;
@@ -693,6 +697,8 @@ export type Database = {
           brand_color?: string | null;
           trust_bar_bg_color?: string | null;
           trust_bar_icon_color?: string | null;
+          trust_bar_icon_bg_color?: string | null;
+          featured_product_ids?: string[];
           created_at?: string;
           address_fr?: string | null;
           description_fr?: string | null;

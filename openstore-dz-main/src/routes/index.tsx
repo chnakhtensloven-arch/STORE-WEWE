@@ -86,6 +86,7 @@ function Home() {
         returnsDays={settings?.returns_days ?? 14}
         backgroundColor={settings?.trust_bar_bg_color}
         iconColor={settings?.trust_bar_icon_color}
+        iconBackgroundColor={settings?.trust_bar_icon_bg_color}
       />
 
       <section id="catalogue" className="container-page scroll-mt-20 py-12">

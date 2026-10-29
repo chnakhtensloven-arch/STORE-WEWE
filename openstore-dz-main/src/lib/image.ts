@@ -123,11 +123,17 @@ async function uploadImage(file: File, pathPrefix: string): Promise<UploadOutcom
 
   const path = `${pathPrefix}/${crypto.randomUUID()}.${extensionFor(blob.type)}`;
 
-  const { error } = await getSupabase()
-    .storage.from(BUCKET)
-    .upload(path, blob, { contentType: blob.type, upsert: false });
-
-  if (error) return { url: null, error: error.message };
+  try {
+    const { error } = await getSupabase()
+      .storage.from(BUCKET)
+      .upload(path, blob, { contentType: blob.type, upsert: false });
+    if (error) return { url: null, error: error.message };
+  } catch (error) {
+    return {
+      url: null,
+      error: error instanceof Error ? error.message : "Could not upload that image.",
+    };
+  }
 
   const { data } = getSupabase().storage.from(BUCKET).getPublicUrl(path);
   return { url: data.publicUrl, error: null };

@@ -29,7 +29,13 @@ export const Route = createFileRoute("/admin/products")({
 function useProductInvalidation() {
   const queryClient = useQueryClient();
   return () => {
-    for (const key of [["admin_products"], ["products"], ["admin_product"]]) {
+    for (const key of [
+      ["admin_products"],
+      ["admin_product_page_product_options"],
+      ["product_page_products"],
+      ["products"],
+      ["admin_product"],
+    ]) {
       void queryClient.invalidateQueries({ queryKey: key });
     }
   };

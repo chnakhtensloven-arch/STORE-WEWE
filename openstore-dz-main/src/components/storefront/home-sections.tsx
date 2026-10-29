@@ -77,7 +77,7 @@ export function PromoBand({ threshold }: { threshold: number }) {
   const formatted = new Intl.NumberFormat("en-US").format(threshold);
 
   return (
-    <section className="container-page py-6">
+    <section className="container-page ">
       <div className="promo-bar">
         <span className="p-text">
           {t("home.promo.title")} -{" "}

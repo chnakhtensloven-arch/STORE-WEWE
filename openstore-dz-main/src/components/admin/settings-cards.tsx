@@ -4,7 +4,11 @@ import { useI18n } from "@/lib/i18n-context";
 import { ColorField, LogoField } from "./brand-fields";
 import { SettingsIdentityTextFields } from "./settings-identity-text-fields";
 import type { StoreSettings } from "@/lib/queries";
-import { DEFAULT_TRUST_BAR_BG_COLOR, DEFAULT_TRUST_BAR_ICON_COLOR } from "@/lib/store-settings";
+import {
+  DEFAULT_TRUST_BAR_BG_COLOR,
+  DEFAULT_TRUST_BAR_ICON_BG_COLOR,
+  DEFAULT_TRUST_BAR_ICON_COLOR,
+} from "@/lib/store-settings";
 
 /**
  * The form sections on the settings page.
@@ -54,6 +58,15 @@ export function IdentityCard({ form, set }: { form: SettingsDraft; set: Settings
             value={form.trust_bar_icon_color ?? DEFAULT_TRUST_BAR_ICON_COLOR}
             onChange={(event) => set("trust_bar_icon_color", event.target.value)}
             aria-label={t("admin.settings.trustBarIcon")}
+            className="size-10 cursor-pointer rounded-[10px] border border-outline bg-transparent p-1"
+          />
+        </Field>
+        <Field label={t("admin.settings.trustBarIconBackground")}>
+          <input
+            type="color"
+            value={form.trust_bar_icon_bg_color ?? DEFAULT_TRUST_BAR_ICON_BG_COLOR}
+            onChange={(event) => set("trust_bar_icon_bg_color", event.target.value)}
+            aria-label={t("admin.settings.trustBarIconBackground")}
             className="size-10 cursor-pointer rounded-[10px] border border-outline bg-transparent p-1"
           />
         </Field>

@@ -255,3 +255,11 @@ export async function deleteVariantImage(id: string): Promise<void> {
   const { error } = await getSupabase().from("variant_images").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+export async function replaceVariantImage(id: string, url: string): Promise<void> {
+  const { error } = await getSupabase()
+    .from("variant_images")
+    .update({ url: url.trim() })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+}

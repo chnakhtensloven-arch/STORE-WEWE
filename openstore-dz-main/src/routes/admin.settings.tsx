@@ -15,9 +15,14 @@ import {
 import { MarketingCard } from "@/components/admin/marketing-card";
 import { HeroImageFields } from "@/components/admin/hero-image-fields";
 import { ExportSettings } from "@/components/admin/export-settings";
+import { ProductPageProductsCard } from "@/components/admin/product-page-products-card";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings, type StoreSettings } from "@/lib/queries";
-import { DEFAULT_TRUST_BAR_BG_COLOR, DEFAULT_TRUST_BAR_ICON_COLOR } from "@/lib/store-settings";
+import {
+  DEFAULT_TRUST_BAR_BG_COLOR,
+  DEFAULT_TRUST_BAR_ICON_BG_COLOR,
+  DEFAULT_TRUST_BAR_ICON_COLOR,
+} from "@/lib/store-settings";
 import { saveStoreSettings } from "@/lib/admin";
 import { DEFAULT_STORE_NAME } from "@/lib/store-name";
 
@@ -42,6 +47,7 @@ const DEFAULTS: StoreSettings = {
   brand_color: "#000000",
   trust_bar_bg_color: DEFAULT_TRUST_BAR_BG_COLOR,
   trust_bar_icon_color: DEFAULT_TRUST_BAR_ICON_COLOR,
+  trust_bar_icon_bg_color: DEFAULT_TRUST_BAR_ICON_BG_COLOR,
   legal_name: null,
   nif: null,
   rc_number: null,
@@ -63,6 +69,7 @@ const DEFAULTS: StoreSettings = {
   facebook_url: null,
   tiktok_url: null,
   returns_note: null,
+  featured_product_ids: [],
 };
 
 function SettingsPage() {
@@ -111,6 +118,10 @@ function SettingsPage() {
 
       <IdentityCard form={form} set={set} />
       <HeroImageFields form={form} set={set} />
+      <ProductPageProductsCard
+        featuredProductIds={form.featured_product_ids}
+        onChange={(ids) => set("featured_product_ids", ids)}
+      />
       <LegalCard form={form} set={set} />
       <MarketingCard form={form} set={set} />
       <CommerceCard form={form} set={set} />

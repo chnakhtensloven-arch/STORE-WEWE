@@ -87,7 +87,7 @@ export type PublicReview = {
   created_at: string;
 };
 
-const PRODUCT_SELECT = `
+export const PRODUCT_SELECT = `
   id, slug, name, name_fr, description, description_fr, kind, status, category_id, published_at,
   categories ( slug, name, name_fr ),
   product_variants (

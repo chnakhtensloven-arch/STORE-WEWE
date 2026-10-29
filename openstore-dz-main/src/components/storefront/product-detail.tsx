@@ -60,7 +60,11 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const name = localized(locale, product.name, product.name_fr);
 
   return (
-    <div className="flex min-w-0 flex-col gap-10">
+    <div
+      className={`flex min-w-0 flex-col gap-10 ${
+        stockable.length > 0 && selected && selected.stock > 0 ? "pb-24 sm:pb-0" : ""
+      }`}
+    >
       <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-12">
         <ProductGallery
           images={images}

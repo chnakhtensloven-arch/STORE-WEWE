@@ -32,6 +32,21 @@ export async function detachFromVariants(variantIds: string[], url: string): Pro
   await removeIfUnused(url);
 }
 
+export async function replaceColourImage(
+  variantIds: string[],
+  oldUrl: string,
+  newUrl: string,
+): Promise<void> {
+  if (variantIds.length === 0) return;
+  const { error } = await getSupabase()
+    .from("variant_images")
+    .update({ url: newUrl })
+    .in("variant_id", variantIds)
+    .eq("url", oldUrl);
+  if (error) throw new Error(error.message);
+  await removeIfUnused(oldUrl);
+}
+
 /** Delete the stored file only when no variant still shows it. */
 export async function removeIfUnused(url: string): Promise<void> {
   const { count, error } = await getSupabase()

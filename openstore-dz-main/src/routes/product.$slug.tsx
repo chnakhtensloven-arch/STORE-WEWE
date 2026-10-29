@@ -4,9 +4,10 @@ import { ProductDetail } from "@/components/storefront/product-detail";
 import { SizeGuide } from "@/components/storefront/size-guide";
 import { ReviewForm, ReviewList } from "@/components/storefront/reviews";
 import { ErrorState } from "@/components/ui/feedback";
-import { productQuery, reviewsQuery, useProduct } from "@/lib/queries";
+import { productQuery, reviewsQuery, storeSettingsQuery, useProduct } from "@/lib/queries";
 import { sizeGuidesQuery } from "@/lib/size-guides";
 import { RelatedProducts } from "@/components/storefront/related-products";
+import { productPageProductsQuery } from "@/lib/product-page-products";
 import { localized } from "@/lib/i18n";
 import { useT } from "@/lib/i18n-context";
 import { DEFAULT_STORE_NAME } from "@/lib/store-name";
@@ -18,11 +19,17 @@ export const Route = createFileRoute("/product/$slug")({
       .ensureQueryData(productQuery(params.slug))
       .catch(() => null);
     if (!product) throw notFound();
+    const settings = await context.queryClient
+      .ensureQueryData(storeSettingsQuery())
+      .catch(() => null);
     // Reviews and size guide are rendered below the fold; fetch them during SSR
     // too so the first paint is complete, but a failure must not blank the page.
     await Promise.all([
       context.queryClient.ensureQueryData(reviewsQuery(product.id)).catch(() => null),
       context.queryClient.ensureQueryData(sizeGuidesQuery(product.id)).catch(() => null),
+      context.queryClient
+        .ensureQueryData(productPageProductsQuery(settings?.featured_product_ids ?? []))
+        .catch(() => null),
     ]);
     return { product };
   },

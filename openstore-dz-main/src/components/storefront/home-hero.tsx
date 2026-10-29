@@ -6,7 +6,11 @@ import { productImage } from "@/lib/queries";
 import { localized } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { resolveStoreName } from "@/lib/store-name";
-import { DEFAULT_TRUST_BAR_BG_COLOR, DEFAULT_TRUST_BAR_ICON_COLOR } from "@/lib/store-settings";
+import {
+  DEFAULT_TRUST_BAR_BG_COLOR,
+  DEFAULT_TRUST_BAR_ICON_BG_COLOR,
+  DEFAULT_TRUST_BAR_ICON_COLOR,
+} from "@/lib/store-settings";
 
 /**
  * Storefront hero.
@@ -34,14 +38,14 @@ export function HomeHero({
     .slice(0, 3);
   const tagline = settings?.tagline?.trim();
   const localizedTagline = locale === "ar" ? tagline : settings?.tagline_fr?.trim();
-  const mobileHeroImage = settings?.hero_mobile_url ?? "/beach.jpg";
-  const desktopHeroImage = settings?.hero_desktop_url ?? "/desktop.jpg";
+  const mobileHeroImage = settings?.hero_mobile_url ?? "/8k.jpg";
+  const desktopHeroImage = settings?.hero_desktop_url ?? "/hd.jpg";
   const heroBackgroundStyle: React.CSSProperties & {
     "--hero-background-image-mobile": string;
     "--hero-background-image-desktop": string;
   } = {
     backgroundImage: `
-      linear-gradient(rgba(231, 223, 223, 0.18), rgba(8, 3, 3, 0.2)),
+      linear-gradient(rgba(231, 223, 223, 0.20), rgba(72, 28, 28, 0.4)),
       var(--hero-background-image, url('/home3.jpg'))
     `,
     backgroundSize: "cover",
@@ -53,12 +57,12 @@ export function HomeHero({
 
   return (
     <section
-      className="home-hero-background overflow-hidden border-b border-outline"
+      className="home-hero-background overflow-hidden  border-bottom"
       style={heroBackgroundStyle}
     >
       <div className="container-page grid items-center gap-10 py-10 sm:py-14 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:py-20">
         <div className="flex flex-col items-start">
-          <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline bg-surface px-3.5 py-1.5 text-xs font-semibold text-secondary">
+          <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline bg-[#fff]/20  px-3.5 py-1.5 text-xs font-semibold text-secondary">
             <span className="size-[7px] shrink-0 rounded-full bg-secondary" aria-hidden="true" />
             {resolveStoreName(settings?.name)}
           </span>
@@ -75,7 +79,7 @@ export function HomeHero({
             </span>
           </h1>
 
-          <p className="mb-7 max-w-[480px] text-base leading-[1.7] text-on-surface-muted">
+          <p className="mb-7 max-w-[480px] text-base leading-[1.7] text-white text-on-surface-muted">
             {t("home.hero.body")}
           </p>
 
@@ -111,7 +115,7 @@ export function HomeHero({
                   to="/product/$slug"
                   params={{ slug: product.slug }}
                   className={cn(
-                    "group relative block overflow-hidden rounded-[18px] border border-outline bg-surface-high shadow-sm",
+                    "group relative block overflow-hidden rounded-[18px]  bg-transparent shadow-xl",
                     index === 1 && "mt-8 sm:mt-12",
                   )}
                 >
@@ -148,14 +152,17 @@ export function TrustBar({
   returnsDays,
   backgroundColor,
   iconColor,
+  iconBackgroundColor,
 }: {
   returnsDays: number;
   backgroundColor: string | null | undefined;
   iconColor: string | null | undefined;
+  iconBackgroundColor: string | null | undefined;
 }) {
   const { t } = useI18n();
   const barColor = backgroundColor ?? DEFAULT_TRUST_BAR_BG_COLOR;
   const trustIconColor = iconColor ?? DEFAULT_TRUST_BAR_ICON_COLOR;
+  const trustIconBackgroundColor = iconBackgroundColor ?? DEFAULT_TRUST_BAR_ICON_BG_COLOR;
 
   const items = [
     { icon: Banknote, title: t("home.trust.cod.title") },
@@ -188,7 +195,10 @@ export function TrustBar({
                 key={`${item.title}-${index}`}
                 className="flex w-screen shrink-0 items-center justify-center gap-3 px-4 sm:w-[25vw]"
               >
-                <span className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10 bg-[#5d9b9b]">
+                <span
+                  className="grid size-15 shrink-0 place-items-center rounded-full border border-white/10"
+                  style={{ backgroundColor: trustIconBackgroundColor }}
+                >
                   <item.icon size={24} style={{ color: trustIconColor }} aria-hidden="true" />
                 </span>
                 <span className="truncate p-1 text-sm font-semibold text-[#939a8a] sm:text-base">

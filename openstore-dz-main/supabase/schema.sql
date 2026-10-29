@@ -78,6 +78,8 @@ create table if not exists public.store_settings (
   hero_desktop_url    text,
   trust_bar_bg_color  text check (trust_bar_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#3f6550',
   trust_bar_icon_color text check (trust_bar_icon_color ~ '^#[0-9a-fA-F]{6}$') default '#939a8a',
+  trust_bar_icon_bg_color text check (trust_bar_icon_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#5d9b9b',
+  featured_product_ids uuid[] not null default '{}',
   -- The storefront's primary colour, "#rrggbb". Null keeps the default theme.
   brand_color         text check (brand_color ~ '^#[0-9a-fA-F]{6}$') default '000000',
 
@@ -132,6 +134,9 @@ alter table public.store_settings
     check (trust_bar_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#3f6550',
   add column if not exists trust_bar_icon_color text
     check (trust_bar_icon_color ~ '^#[0-9a-fA-F]{6}$') default '#939a8a',
+  add column if not exists trust_bar_icon_bg_color text
+    check (trust_bar_icon_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#5d9b9b',
+  add column if not exists featured_product_ids uuid[] not null default '{}',
   add column if not exists tagline_color text
     check (tagline_color ~ '^#[0-9a-fA-F]{6}$'),
   add column if not exists description_color text
