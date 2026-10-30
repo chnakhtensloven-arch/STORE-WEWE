@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SetupRouteImport } from './routes/setup'
@@ -24,7 +25,9 @@ import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSlipsRouteImport } from './routes/admin.slips'
+import { Route as AdminVendorsRouteImport } from './routes/admin.vendors'
 import { Route as AdminWelcomeRouteImport } from './routes/admin.welcome'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as OrderTokenRouteImport } from './routes/order.$token'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
@@ -48,6 +51,11 @@ const CatalogueRoute = CatalogueRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -105,10 +113,20 @@ const AdminSlipsRoute = AdminSlipsRouteImport.update({
   path: '/slips',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminVendorsRoute = AdminVendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminWelcomeRoute = AdminWelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
   getParentRoute: () => AdminRoute,
+} as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/auth/confirm',
+  path: '/auth/confirm',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
@@ -136,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/setup': typeof SetupRoute
@@ -146,7 +165,9 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/slips': typeof AdminSlipsRoute
+  '/admin/vendors': typeof AdminVendorsRoute
   '/admin/welcome': typeof AdminWelcomeRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$token': typeof OrderTokenRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -157,6 +178,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/setup': typeof SetupRoute
@@ -167,7 +189,9 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/slips': typeof AdminSlipsRoute
+  '/admin/vendors': typeof AdminVendorsRoute
   '/admin/welcome': typeof AdminWelcomeRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$token': typeof OrderTokenRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -180,6 +204,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/setup': typeof SetupRoute
@@ -190,7 +215,9 @@ export interface FileRoutesById {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/slips': typeof AdminSlipsRoute
+  '/admin/vendors': typeof AdminVendorsRoute
   '/admin/welcome': typeof AdminWelcomeRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$token': typeof OrderTokenRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -204,6 +231,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/catalogue'
     | '/checkout'
+    | '/dashboard'
     | '/login'
     | '/search'
     | '/setup'
@@ -214,7 +242,9 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/slips'
+    | '/admin/vendors'
     | '/admin/welcome'
+    | '/auth/confirm'
     | '/category/$slug'
     | '/order/$token'
     | '/product/$slug'
@@ -225,6 +255,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalogue'
     | '/checkout'
+    | '/dashboard'
     | '/login'
     | '/search'
     | '/setup'
@@ -235,7 +266,9 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/slips'
+    | '/admin/vendors'
     | '/admin/welcome'
+    | '/auth/confirm'
     | '/category/$slug'
     | '/order/$token'
     | '/product/$slug'
@@ -247,6 +280,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/catalogue'
     | '/checkout'
+    | '/dashboard'
     | '/login'
     | '/search'
     | '/setup'
@@ -257,7 +291,9 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/slips'
+    | '/admin/vendors'
     | '/admin/welcome'
+    | '/auth/confirm'
     | '/category/$slug'
     | '/order/$token'
     | '/product/$slug'
@@ -270,10 +306,12 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   CatalogueRoute: typeof CatalogueRoute
   CheckoutRoute: typeof CheckoutRoute
+  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
   SetupRoute: typeof SetupRoute
   TrackRoute: typeof TrackRoute
+  AuthConfirmRoute: typeof AuthConfirmRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrderTokenRoute: typeof OrderTokenRoute
   ProductSlugRoute: typeof ProductSlugRoute
@@ -307,6 +345,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -386,12 +431,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSlipsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/vendors': {
+      id: '/admin/vendors'
+      path: '/vendors'
+      fullPath: '/admin/vendors'
+      preLoaderRoute: typeof AdminVendorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/welcome': {
       id: '/admin/welcome'
       path: '/welcome'
       fullPath: '/admin/welcome'
       preLoaderRoute: typeof AdminWelcomeRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/auth/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/category/$slug': {
       id: '/category/$slug'
@@ -431,6 +490,7 @@ interface AdminRouteChildren {
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSlipsRoute: typeof AdminSlipsRoute
+  AdminVendorsRoute: typeof AdminVendorsRoute
   AdminWelcomeRoute: typeof AdminWelcomeRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductIdRoute: typeof AdminProductIdRoute
@@ -443,6 +503,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSlipsRoute: AdminSlipsRoute,
+  AdminVendorsRoute: AdminVendorsRoute,
   AdminWelcomeRoute: AdminWelcomeRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProductIdRoute: AdminProductIdRoute,
@@ -455,10 +516,12 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   CatalogueRoute: CatalogueRoute,
   CheckoutRoute: CheckoutRoute,
+  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SearchRoute: SearchRoute,
   SetupRoute: SetupRoute,
   TrackRoute: TrackRoute,
+  AuthConfirmRoute: AuthConfirmRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrderTokenRoute: OrderTokenRoute,
   ProductSlugRoute: ProductSlugRoute,

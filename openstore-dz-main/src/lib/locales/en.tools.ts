@@ -1,6 +1,7 @@
 /* en copy for the owner's setup tools: categories, variant generator, setup wizard. */
 export const enTools = {
   "admin.nav.categories": "Categories",
+  "admin.nav.vendors": "Vendors",
   "admin.categories.intro":
     "Group products so buyers can browse. Empty categories stay hidden from the shop.",
   "admin.categories.name": "Name (Arabic)",

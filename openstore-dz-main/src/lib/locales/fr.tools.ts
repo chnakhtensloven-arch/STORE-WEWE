@@ -1,6 +1,7 @@
 /* fr copy for the owner's setup tools: categories, variant generator, setup wizard. */
 export const frTools = {
   "admin.nav.categories": "Catégories",
+  "admin.nav.vendors": "Vendeurs",
   "admin.categories.intro":
     "Regroupez vos produits pour que les clients s’y retrouvent. Une catégorie vide reste cachée.",
   "admin.categories.name": "Nom en arabe",

@@ -1,6 +1,7 @@
 /* ar copy for the owner's setup tools: categories, variant generator, setup wizard. */
 export const arTools = {
   "admin.nav.categories": "التصنيفات",
+  "admin.nav.vendors": "البائعون",
   "admin.categories.intro":
     "رتّب منتجاتك حتى يتصفحها الزبائن بسهولة. التصنيف الفارغ لا يظهر في المتجر.",
   "admin.categories.name": "الاسم بالعربية",

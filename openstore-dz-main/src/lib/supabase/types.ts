@@ -146,6 +146,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      vendors: {
+        Row: {
+          id: string;
+          is_active: boolean;
+          store_name: string;
+          subscription_end: string | null;
+          user_id: string;
+        };
+        Insert: {
+          id?: string;
+          is_active?: boolean;
+          store_name?: string;
+          subscription_end?: string | null;
+          user_id: string;
+        };
+        Update: {
+          id?: string;
+          is_active?: boolean;
+          store_name?: string;
+          subscription_end?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       order_export_log: {
         Row: {
           created_at: string;
@@ -775,10 +799,12 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_activate_vendor: { Args: { p_vendor_id: string }; Returns: undefined };
       admin_analytics: {
         Args: { p_days?: number };
         Returns: Json;
       };
+      admin_deactivate_vendor: { Args: { p_vendor_id: string }; Returns: undefined };
       admin_phone_history: {
         Args: { p_phones: string[] };
         Returns: {
@@ -792,6 +818,17 @@ export type Database = {
       admin_exists: {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
+      };
+      admin_list_vendors: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          email: string | null;
+          id: string;
+          is_active: boolean;
+          store_name: string | null;
+          subscription_end: string | null;
+          user_id: string;
+        }[];
       };
       category_product_counts: {
         Args: Record<PropertyKey, never>;
