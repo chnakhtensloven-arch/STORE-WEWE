@@ -130,7 +130,12 @@ function PasswordSetupForm({ initialEmail }: { initialEmail: string }) {
         setError(updateError.message);
         return;
       }
-      await navigate({ to: "/dashboard" });
+      const { error: signOutError } = await getSupabase().auth.signOut();
+      if (signOutError) {
+        setError(signOutError.message);
+        return;
+      }
+      await navigate({ to: "/login" });
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : t("common.somethingWrong"));
     } finally {
