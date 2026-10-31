@@ -118,14 +118,19 @@ function LoginPage() {
     event.preventDefault();
     setBusy(true);
     setError(null);
-    const outcome = await signInAndResolveRole(email, password);
-    setBusy(false);
-    if (outcome.ok) {
+    try {
+      const outcome = await signInAndResolveRole(email, password);
+      if (!outcome.ok) {
+        setError(outcome.error);
+        return;
+      }
       await refreshRole();
-      void navigate({ to: outcome.destination });
-      return;
+      await navigate({ to: outcome.destination });
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : t("common.somethingWrong"));
+    } finally {
+      setBusy(false);
     }
-    setError(outcome.error);
   };
 
   return (

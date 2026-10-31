@@ -45,7 +45,11 @@ function ConfirmInvitationPage() {
                   token_hash: normalizedTokenHash,
                   type: "invite",
                 });
-                return { error: error?.message ?? null, email: data.user?.email };
+                if (error) return { error: error.message };
+                if (!data.session || !data.user?.email) {
+                  return { error: t("auth.confirm.sessionError") };
+                }
+                return { error: null, email: data.user.email };
               } catch (error) {
                 return {
                   error: error instanceof Error ? error.message : t("common.somethingWrong"),
@@ -103,7 +107,6 @@ function PasswordSetupForm({ initialEmail }: { initialEmail: string }) {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
-  const [email, setEmail] = useState(initialEmail);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -122,10 +125,7 @@ function PasswordSetupForm({ initialEmail }: { initialEmail: string }) {
 
     setSaving(true);
     try {
-      const { error: updateError } = await getSupabase().auth.updateUser({
-        email: email.trim(),
-        password,
-      });
+      const { error: updateError } = await getSupabase().auth.updateUser({ password });
       if (updateError) {
         setError(updateError.message);
         return;
@@ -152,15 +152,7 @@ function PasswordSetupForm({ initialEmail }: { initialEmail: string }) {
       </div>
 
       <Field label={t("auth.confirm.email")} required>
-        <Input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          autoComplete="email"
-          dir="ltr"
-          required
-          disabled={saving}
-        />
+        <Input type="email" value={initialEmail} autoComplete="email" dir="ltr" required readOnly />
       </Field>
 
       <Field label={t("auth.confirm.password")} required>

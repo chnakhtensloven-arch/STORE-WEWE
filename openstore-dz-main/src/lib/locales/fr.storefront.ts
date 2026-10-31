@@ -36,12 +36,14 @@ export const frStorefront = {
   "common.somethingWrong": "Une erreur est survenue. Réessayez.",
   "auth.confirm.title": "Choisissez votre mot de passe",
   "auth.confirm.body":
-    "Votre invitation est confirmée. Définissez l’e-mail et le mot de passe de votre compte.",
+    "Votre invitation est confirmée. Utilisez l’adresse invitée et choisissez un mot de passe.",
   "auth.confirm.email": "Adresse e-mail",
   "auth.confirm.password": "Nouveau mot de passe",
   "auth.confirm.confirmPassword": "Confirmer le nouveau mot de passe",
   "auth.confirm.submit": "Enregistrer le mot de passe",
   "auth.confirm.invalidLink": "Ce lien d’invitation est invalide ou a expiré.",
+  "auth.confirm.sessionError":
+    "Impossible d’ouvrir une session avec l’invitation. Demandez un nouveau lien.",
   "auth.confirm.weakPassword": "Le mot de passe doit contenir au moins 8 caractères.",
   "auth.confirm.passwordMismatch": "Les mots de passe ne correspondent pas.",
   "dashboard.title": "Tableau de bord vendeur",

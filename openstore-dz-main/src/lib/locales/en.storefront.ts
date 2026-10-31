@@ -35,12 +35,15 @@ export const enStorefront = {
   "common.archived": "Archived",
   "common.somethingWrong": "Something went wrong. Please try again.",
   "auth.confirm.title": "Set your password",
-  "auth.confirm.body": "Your invitation is confirmed. Set the email and password for your account.",
+  "auth.confirm.body":
+    "Your invitation is confirmed. Use the invited email and choose a password for your account.",
   "auth.confirm.email": "Email address",
   "auth.confirm.password": "New password",
   "auth.confirm.confirmPassword": "Confirm new password",
   "auth.confirm.submit": "Save password",
   "auth.confirm.invalidLink": "This invitation link is invalid or has expired.",
+  "auth.confirm.sessionError":
+    "The invitation could not start a sign-in session. Request a new invite.",
   "auth.confirm.weakPassword": "Your password must be at least 8 characters.",
   "auth.confirm.passwordMismatch": "The passwords do not match.",
   "dashboard.title": "Vendor dashboard",
