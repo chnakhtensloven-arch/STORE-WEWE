@@ -71,7 +71,7 @@ async function signInAndResolveRole(email: string, password: string): Promise<Si
     await supabase.auth.signOut();
     return { ok: false, error: vendorError.message };
   }
-  if (vendor) return { ok: true, destination: "/admin" };
+  if (vendor) return { ok: true, destination: "/dashboard" };
 
   await supabase.auth.signOut();
   return { ok: false, error: "This account is not a shop administrator." };
