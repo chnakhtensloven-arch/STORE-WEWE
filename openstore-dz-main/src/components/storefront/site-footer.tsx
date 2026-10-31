@@ -5,6 +5,7 @@ import { SocialLinks } from "./social-links";
 import { formatDzd } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 import { resolveStoreName } from "@/lib/store-name";
+import { RichDescription } from "./rich-description";
 
 const textColorStyle = (color: string | null | undefined): React.CSSProperties | undefined =>
   color ? { color } : undefined;
@@ -57,12 +58,11 @@ export function SiteFooter() {
             </p>
           )}
           {description && (
-            <p
+            <RichDescription
+              value={description}
               className="max-w-sm text-sm text-on-surface-muted"
               style={textColorStyle(settings?.description_color)}
-            >
-              {description}
-            </p>
+            />
           )}
         </div>
 

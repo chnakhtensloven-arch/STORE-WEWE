@@ -81,7 +81,7 @@ create table if not exists public.store_settings (
   trust_bar_icon_bg_color text check (trust_bar_icon_bg_color ~ '^#[0-9a-fA-F]{6}$') default '#5d9b9b',
   featured_product_ids uuid[] not null default '{}',
   -- The storefront's primary colour, "#rrggbb". Null keeps the default theme.
-  brand_color         text check (brand_color ~ '^#[0-9a-fA-F]{6}$') default '000000',
+  brand_color         text check (brand_color ~ '^#[0-9a-fA-F]{6}$') default '#000000',
 
   -- Contact and legal disclosures. Law 18-05 (10 May 2018) Article 11 requires
   -- these to be published by any Algerian e-commerce activity.
@@ -331,6 +331,8 @@ alter table public.size_guides
   add column if not exists note_fr text;
 alter table public.store_settings
   add column if not exists brand_color text check (brand_color ~ '^#[0-9a-fA-F]{6}$');
+alter table public.store_settings
+  alter column brand_color set default '#000000';
 alter table public.delivery_zones
   add column if not exists stopdesk_fee int check (stopdesk_fee >= 0);
 alter table public.orders

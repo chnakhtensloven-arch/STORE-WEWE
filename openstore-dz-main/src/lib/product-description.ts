@@ -1,3 +1,5 @@
+import { richHtmlToText } from "./rich-html";
+
 export type ProductDescriptionBlock =
   | { id: string; type: "text"; text: string }
   | { id: string; type: "image"; url: string; alt: string };
@@ -90,7 +92,7 @@ export function productDescriptionText(value: string | null | undefined): string
     .filter(
       (block): block is Extract<ProductDescriptionBlock, { type: "text" }> => block.type === "text",
     )
-    .map((block) => block.text)
+    .map((block) => richHtmlToText(block.text))
     .join("\n")
     .trim();
 }

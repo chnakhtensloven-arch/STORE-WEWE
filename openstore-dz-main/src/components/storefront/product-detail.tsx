@@ -16,6 +16,7 @@ import { AddToCart, StockLine } from "./product-purchase";
 import { localized } from "@/lib/i18n";
 import { ColourPicker, SizePicker } from "./variant-picker";
 import { parseProductDescription } from "@/lib/product-description";
+import { RichDescription } from "./rich-description";
 
 /**
  * Product page layout.
@@ -115,12 +116,11 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
           <div className="flex min-w-0 flex-col gap-5">
             {descriptionBlocks.map((block, index) =>
               block.type === "text" ? (
-                <p
+                <RichDescription
                   key={block.id}
-                  className="whitespace-pre-line break-words text-sm text-on-surface-muted"
-                >
-                  {block.text}
-                </p>
+                  value={block.text}
+                  className="text-sm text-on-surface-muted"
+                />
               ) : (
                 <img
                   key={block.id}

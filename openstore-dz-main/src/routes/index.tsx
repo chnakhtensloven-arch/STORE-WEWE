@@ -15,6 +15,7 @@ import { reviewsQuery, storeSettingsQuery } from "@/lib/queries";
 import { EMPTY_FILTERS, cataloguePageQuery, useCataloguePage } from "@/lib/catalogue";
 import { useI18n } from "@/lib/i18n-context";
 import { resolveStoreName } from "@/lib/store-name";
+import { richHtmlToText } from "@/lib/rich-html";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/")({
     const tagline = (ar ? s?.tagline : s?.tagline_fr)?.trim();
     const title = `${name}${tagline ? ` — ${tagline}` : ""}`;
     const description =
-      (ar ? s?.description : s?.description_fr)?.trim() ||
+      richHtmlToText((ar ? s?.description : s?.description_fr) ?? "") ||
       (ar
         ? "تسوق أونلاين مع الدفع عند الاستلام والتوصيل إلى 58 ولاية."
         : "Shop online, pay cash on delivery.");
