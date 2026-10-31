@@ -8,56 +8,54 @@ import { useI18n } from "@/lib/i18n-context";
 import { getSupabase } from "@/lib/supabase/client";
 
 export const Route = createFileRoute("/auth/confirm")({
+  validateSearch: (search: Record<string, unknown>): { token_hash?: string; type?: string } => ({
+    token_hash: typeof search.token_hash === "string" ? search.token_hash : undefined,
+    type: typeof search.type === "string" ? search.type : undefined,
+  }),
   head: () => ({
     meta: [{ title: "Set your password" }, { name: "robots", content: "noindex" }],
   }),
   component: ConfirmInvitationPage,
 });
 
-const OTP_TYPES = [
-  "signup",
-  "invite",
-  "magiclink",
-  "recovery",
-  "email_change",
-  "email",
-  "phone_change",
-  "sms",
-] as const;
-
-type OtpType = (typeof OTP_TYPES)[number];
 type VerificationResult = { error: string | null };
 type VerificationPhase = "verifying" | "ready" | "failed";
 
-function isOtpType(value: string | null): value is OtpType {
-  return value !== null && OTP_TYPES.some((otpType) => otpType === value);
-}
-
 function ConfirmInvitationPage() {
   const { t } = useI18n();
-  const verification = useRef<Promise<VerificationResult> | null>(null);
+  const { token_hash: tokenHash, type } = Route.useSearch();
+  const verification = useRef<{ key: string; promise: Promise<VerificationResult> } | null>(null);
   const [phase, setPhase] = useState<VerificationPhase>("verifying");
   const [verificationError, setVerificationError] = useState<string | null>(null);
-  useEffect(() => {
-    if (!verification.current) {
-      const params = new URLSearchParams(window.location.search);
-      const tokenHash = params.get("token_hash");
-      const type = params.get("type");
 
-      if (!tokenHash || !isOtpType(type)) {
-        verification.current = Promise.resolve({ error: t("auth.confirm.invalidLink") });
-      } else {
-        verification.current = getSupabase()
-          .auth.verifyOtp({ token_hash: tokenHash, type })
-          .then(({ error }) => ({ error: error?.message ?? null }))
-          .catch((error: unknown) => ({
-            error: error instanceof Error ? error.message : t("common.somethingWrong"),
-          }));
-      }
+  useEffect(() => {
+    const normalizedTokenHash = tokenHash?.trim();
+    const key = `${type ?? ""}:${normalizedTokenHash ?? ""}`;
+    setPhase("verifying");
+    setVerificationError(null);
+
+    if (verification.current?.key !== key) {
+      const promise =
+        type !== "invite" || !normalizedTokenHash
+          ? Promise.resolve({ error: t("auth.confirm.invalidLink") })
+          : (async (): Promise<VerificationResult> => {
+              try {
+                const { error } = await getSupabase().auth.verifyOtp({
+                  token_hash: normalizedTokenHash,
+                  type: "invite",
+                });
+                return { error: error?.message ?? null };
+              } catch (error) {
+                return {
+                  error: error instanceof Error ? error.message : t("common.somethingWrong"),
+                };
+              }
+            })();
+      verification.current = { key, promise };
     }
 
     let cancelled = false;
-    void verification.current.then((result) => {
+    void verification.current.promise.then((result) => {
       if (cancelled) return;
       if (result.error) {
         setVerificationError(result.error);
@@ -70,7 +68,7 @@ function ConfirmInvitationPage() {
     return () => {
       cancelled = true;
     };
-  }, [t]);
+  }, [tokenHash, type, t]);
 
   return (
     <main className="container-page flex min-h-dvh flex-col items-center justify-center gap-6 py-16">
