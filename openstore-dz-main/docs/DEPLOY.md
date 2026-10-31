@@ -22,6 +22,19 @@ This produces `.vercel/output/` using the Vercel Build Output API:
 
 That is a Node 20+ runtime. The same output works on Vercel, Netlify, or a VPS.
 
+## Independent shop invitations
+
+OpenStore is single-store per installation. To invite someone to create their own
+shop, send them the **Deploy with Vercel** button in the repository README and have
+them follow its setup steps. They need a Supabase project and a Vercel deployment
+of their own, then they create the first owner account at `/setup`.
+
+Do not invite them with **Supabase Authentication → Invite user** from your shop's
+project. That only creates an Auth user in your project; it does not provision an
+independent database or deployment. The optional `supabase/vendor-admin.sql` flow
+also creates vendor accounts inside one shared database and is not an independent
+shop installation.
+
 ## Vercel
 
 1. Push the repository to GitHub.

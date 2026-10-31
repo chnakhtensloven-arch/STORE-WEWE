@@ -129,6 +129,15 @@ minutes, all free tiers:
    URL to your Vercel address and turn off **Allow new users to sign up**. Your
    owner account keeps working.
 
+### Invite someone to open their own shop
+
+Send them the **Deploy with Vercel** button above, not a Supabase Auth invitation
+from your shop. A Supabase Auth invitation creates an account in the project that
+sends it; it does not create a separate shop or database. Each new owner should
+create their own Supabase project and Vercel deployment, apply `supabase/schema.sql`,
+and claim that deployment at `/setup`. This keeps their customers, products, and
+orders separate from yours. See [`docs/DEPLOY.md`](docs/DEPLOY.md#independent-shop-invitations).
+
 Prefer your own machine, or want an AI agent to do it for you? Read on.
 
 ---
