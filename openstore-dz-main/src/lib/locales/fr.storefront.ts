@@ -36,7 +36,8 @@ export const frStorefront = {
   "common.somethingWrong": "Une erreur est survenue. Réessayez.",
   "auth.confirm.title": "Choisissez votre mot de passe",
   "auth.confirm.body":
-    "Votre invitation est confirmée. Choisissez un mot de passe pour votre compte.",
+    "Votre invitation est confirmée. Définissez l’e-mail et le mot de passe de votre compte.",
+  "auth.confirm.email": "Adresse e-mail",
   "auth.confirm.password": "Nouveau mot de passe",
   "auth.confirm.confirmPassword": "Confirmer le nouveau mot de passe",
   "auth.confirm.submit": "Enregistrer le mot de passe",

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/auth/confirm")({
   component: ConfirmInvitationPage,
 });
 
-type VerificationResult = { error: string | null };
+type VerificationResult = { error: string | null; email?: string | null };
 type VerificationPhase = "verifying" | "ready" | "failed";
 
 function ConfirmInvitationPage() {
@@ -27,6 +27,7 @@ function ConfirmInvitationPage() {
   const verification = useRef<{ key: string; promise: Promise<VerificationResult> } | null>(null);
   const [phase, setPhase] = useState<VerificationPhase>("verifying");
   const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [inviteEmail, setInviteEmail] = useState("");
 
   useEffect(() => {
     const normalizedTokenHash = tokenHash?.trim();
@@ -40,11 +41,11 @@ function ConfirmInvitationPage() {
           ? Promise.resolve({ error: t("auth.confirm.invalidLink") })
           : (async (): Promise<VerificationResult> => {
               try {
-                const { error } = await getSupabase().auth.verifyOtp({
+                const { data, error } = await getSupabase().auth.verifyOtp({
                   token_hash: normalizedTokenHash,
                   type: "invite",
                 });
-                return { error: error?.message ?? null };
+                return { error: error?.message ?? null, email: data.user?.email };
               } catch (error) {
                 return {
                   error: error instanceof Error ? error.message : t("common.somethingWrong"),
@@ -62,6 +63,7 @@ function ConfirmInvitationPage() {
         setPhase("failed");
       } else {
         setPhase("ready");
+        setInviteEmail(result.email ?? "");
       }
     });
 
@@ -90,17 +92,18 @@ function ConfirmInvitationPage() {
           </Button>
         </section>
       ) : (
-        <PasswordSetupForm />
+        <PasswordSetupForm initialEmail={inviteEmail} />
       )}
     </main>
   );
 }
 
-function PasswordSetupForm() {
+function PasswordSetupForm({ initialEmail }: { initialEmail: string }) {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const [email, setEmail] = useState(initialEmail);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -119,7 +122,10 @@ function PasswordSetupForm() {
 
     setSaving(true);
     try {
-      const { error: updateError } = await getSupabase().auth.updateUser({ password });
+      const { error: updateError } = await getSupabase().auth.updateUser({
+        email: email.trim(),
+        password,
+      });
       if (updateError) {
         setError(updateError.message);
         return;
@@ -144,6 +150,18 @@ function PasswordSetupForm() {
         </h1>
         <p className="text-sm text-on-surface-muted">{t("auth.confirm.body")}</p>
       </div>
+
+      <Field label={t("auth.confirm.email")} required>
+        <Input
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          autoComplete="email"
+          dir="ltr"
+          required
+          disabled={saving}
+        />
+      </Field>
 
       <Field label={t("auth.confirm.password")} required>
         <Input
