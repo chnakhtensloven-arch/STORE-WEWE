@@ -12,16 +12,14 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-type SignInOutcome = { ok: true } | { ok: false; error: string };
+type SignInOutcome =
+  { ok: true; destination: "/admin" | "/dashboard" } | { ok: false; error: string };
 
 /**
  * Sign in, then settle what the account actually is.
  *
- * Three outcomes, in order of likelihood: an administrator, the first person
- * ever (who claims the store), or a signed-in customer who is not staff and is
- * signed straight back out. Leaving a customer session open on the admin screen
- * would be worse than a failed login — the next request would look authenticated
- * and only fail deep inside a policy.
+ * Resolve administrators before vendors because the first administrator may
+ * also have a vendor row created by the auth signup trigger.
  */
 async function signInAndResolveRole(email: string, password: string): Promise<SignInOutcome> {
   const supabase = getSupabase();
@@ -34,22 +32,46 @@ async function signInAndResolveRole(email: string, password: string): Promise<Si
     return { ok: false, error: error?.message ?? "Could not sign in." };
   }
 
-  const { data: roleRow } = await supabase
+  const { data: roleRow, error: roleError } = await supabase
     .from("admin_users")
     .select("role")
     .eq("user_id", data.user.id)
     .maybeSingle();
 
-  if (roleRow) return { ok: true };
+  if (roleError) {
+    await supabase.auth.signOut();
+    return { ok: false, error: roleError.message };
+  }
+  if (roleRow) return { ok: true, destination: "/admin" };
 
   // First administrator ever. This is how an owner arrives after confirming
   // their email on the setup screen: the account exists, but the session only
   // appears now, so the claim has to happen at this point.
-  const { data: exists } = await supabase.rpc("admin_exists");
+  const { data: exists, error: existsError } = await supabase.rpc("admin_exists");
+  if (existsError) {
+    await supabase.auth.signOut();
+    return { ok: false, error: existsError.message };
+  }
   if (exists === false) {
     const { error: claimError } = await supabase.rpc("claim_store");
-    return claimError ? { ok: false, error: claimError.message } : { ok: true };
+    if (claimError) {
+      await supabase.auth.signOut();
+      return { ok: false, error: claimError.message };
+    }
+    return { ok: true, destination: "/admin" };
   }
+
+  const { data: vendor, error: vendorError } = await supabase
+    .from("vendors")
+    .select("id")
+    .eq("user_id", data.user.id)
+    .maybeSingle();
+
+  if (vendorError) {
+    await supabase.auth.signOut();
+    return { ok: false, error: vendorError.message };
+  }
+  if (vendor) return { ok: true, destination: "/dashboard" };
 
   await supabase.auth.signOut();
   return { ok: false, error: "This account is not a shop administrator." };
@@ -100,7 +122,7 @@ function LoginPage() {
     setBusy(false);
     if (outcome.ok) {
       await refreshRole();
-      void navigate({ to: "/admin" });
+      void navigate({ to: outcome.destination });
       return;
     }
     setError(outcome.error);
