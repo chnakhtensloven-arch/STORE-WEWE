@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ChevronsLeft,
   ClipboardList,
@@ -17,6 +17,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n-context";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 /**
  * Admin navigation rail.
@@ -53,7 +54,17 @@ export function AdminSidebar({
   onToggleCollapse: () => void;
 }) {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      await navigate({ to: "/login" });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    }
+  };
 
   return (
     <>
@@ -124,7 +135,7 @@ export function AdminSidebar({
 
           <button
             type="button"
-            onClick={() => void signOut()}
+            onClick={() => void handleSignOut()}
             className="admin-nav-item justify-center"
           >
             <LogOut aria-hidden="true" />

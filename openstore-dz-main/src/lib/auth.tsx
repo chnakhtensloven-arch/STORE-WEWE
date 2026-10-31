@@ -83,7 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await getSupabase().auth.signOut();
+    const { error } = await getSupabase().auth.signOut();
+    if (error) throw error;
+    setUser(null);
     setRole(null);
   }, []);
 

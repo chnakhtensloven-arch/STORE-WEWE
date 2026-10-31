@@ -8,6 +8,7 @@ import { ErrorState, LoadingState } from "@/components/ui/feedback";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n-context";
 import { getSupabase } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -35,6 +36,15 @@ function VendorDashboardPage() {
       return data;
     },
   });
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      await navigate({ to: "/login" });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) void navigate({ to: "/login" });
@@ -71,13 +81,7 @@ function VendorDashboardPage() {
           <Store size={20} className="text-primary" aria-hidden="true" />
           {t("app.name")}
         </Link>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            void signOut().then(() => navigate({ to: "/login" }));
-          }}
-        >
+        <Button type="button" variant="outline" onClick={() => void handleSignOut()}>
           <LogOut size={16} aria-hidden="true" />
           {t("nav.logout")}
         </Button>
