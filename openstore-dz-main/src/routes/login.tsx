@@ -27,8 +27,8 @@ async function rejectSignIn(error: string, vendorUnauthorized = false): Promise<
 /**
  * Sign in, then settle what the account actually is.
  *
- * Resolve administrators before vendors because the first administrator may
- * also have a vendor row created by the auth signup trigger.
+ * Resolve administrators before vendors so vendor-table setup cannot block
+ * an administrator from signing in.
  */
 async function signInAndResolveRole(email: string, password: string): Promise<SignInOutcome> {
   const supabase = getSupabase();
@@ -52,33 +52,16 @@ async function signInAndResolveRole(email: string, password: string): Promise<Si
   }
   if (roleRow) return { ok: true, destination: "/admin" };
 
-  // First administrator ever. This is how an owner arrives after confirming
-  // their email on the setup screen: the account exists, but the session only
-  // appears now, so the claim has to happen at this point.
-  const { data: exists, error: existsError } = await supabase.rpc("admin_exists");
-  if (existsError) {
-    return rejectSignIn(existsError.message);
-  }
-  if (exists === false) {
-    const { error: claimError } = await supabase.rpc("claim_store");
-    if (claimError) {
-      return rejectSignIn(claimError.message);
-    }
-    return { ok: true, destination: "/admin" };
-  }
-
-  // vendors stores the auth user ID, not a copied email. This RLS-protected
-  // lookup verifies the signed-in email's actual Auth identity.
   const { data: vendor, error: vendorError } = await supabase
     .from("vendors")
-    .select("id")
+    .select("id, is_active")
     .eq("user_id", data.user.id)
     .maybeSingle();
 
   if (vendorError) {
     return rejectSignIn(vendorError.message);
   }
-  if (vendor) return { ok: true, destination: "/dashboard" };
+  if (vendor?.is_active) return { ok: true, destination: "/dashboard" };
 
   return rejectSignIn("", true);
 }

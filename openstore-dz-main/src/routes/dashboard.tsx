@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
 import { ErrorState, LoadingState } from "@/components/ui/feedback";
 import { useAuth } from "@/lib/auth";
+import { formatDate } from "@/lib/format";
 import { useI18n } from "@/lib/i18n-context";
 import { getSupabase } from "@/lib/supabase/client";
 import { toast } from "sonner";
@@ -67,11 +68,9 @@ function VendorDashboardPage() {
     );
   }
 
-  const subscriptionEnd = vendor.data.subscription_end
-    ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(
-        new Date(`${vendor.data.subscription_end}T00:00:00`),
-      )
-    : t("dashboard.noSubscription");
+  const formattedSubscriptionEnd = formatDate(vendor.data.subscription_end, locale, "long");
+  const subscriptionEnd =
+    formattedSubscriptionEnd === "—" ? t("dashboard.noSubscription") : formattedSubscriptionEnd;
 
   return (
     <main className="container-page flex min-h-dvh flex-col gap-8 py-8 sm:py-12">

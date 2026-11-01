@@ -31,27 +31,57 @@ const DATE_LOCALE: Record<Locale, string> = {
   en: "en-GB",
 };
 
-function formatDate(iso: string, locale: Locale = "ar"): string {
-  return new Intl.DateTimeFormat(DATE_LOCALE[locale], {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(iso));
+function parseIsoDate(iso: string | null | undefined): Date | null {
+  if (!iso) return null;
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})(?:T.+)?$/.exec(iso.trim());
+  if (!match) return null;
+
+  const [, year, month, day] = match;
+  const monthNumber = Number(month);
+  const dayNumber = Number(day);
+  const daysInMonth = new Date(Number(year), monthNumber, 0).getDate();
+  if (monthNumber < 1 || monthNumber > 12 || dayNumber < 1 || dayNumber > daysInMonth) {
+    return null;
+  }
+
+  const date =
+    iso.trim().length === 10
+      ? new Date(Number(year), monthNumber - 1, dayNumber)
+      : new Date(iso.trim());
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
-export function formatDateTime(iso: string, locale: Locale = "ar"): string {
+export function formatDate(
+  iso: string | null | undefined,
+  locale: Locale = "ar",
+  dateStyle: "long" | "medium" = "medium",
+): string {
+  const date = parseIsoDate(iso);
+  if (!date) return "—";
+
+  return new Intl.DateTimeFormat(DATE_LOCALE[locale], { dateStyle }).format(date);
+}
+
+export function formatDateTime(iso: string | null | undefined, locale: Locale = "ar"): string {
+  const date = parseIsoDate(iso);
+  if (!date) return "—";
+
   return new Intl.DateTimeFormat(DATE_LOCALE[locale], {
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(iso));
+  }).format(date);
 }
 
 /** Short "3 days ago" style label, used on reviews and the order queue. */
-export function formatRelative(iso: string, locale: Locale = "ar"): string {
-  const diffMs = Date.now() - new Date(iso).getTime();
+export function formatRelative(iso: string | null | undefined, locale: Locale = "ar"): string {
+  const date = parseIsoDate(iso);
+  if (!date) return "—";
+
+  const diffMs = Date.now() - date.getTime();
   const days = Math.floor(diffMs / 86_400_000);
   if (days < 1) return locale === "ar" ? "اليوم" : locale === "fr" ? "aujourd'hui" : "today";
   if (days === 1) return locale === "ar" ? "أمس" : locale === "fr" ? "hier" : "yesterday";

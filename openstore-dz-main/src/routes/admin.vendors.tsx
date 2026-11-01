@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ErrorState, LoadingState } from "@/components/ui/feedback";
 import { useAuth } from "@/lib/auth";
+import { formatDate } from "@/lib/format";
 import { useI18n } from "@/lib/i18n-context";
 import { getSupabase } from "@/lib/supabase/client";
 
@@ -43,7 +44,6 @@ function VendorTable({
   onUpdate: (id: string, action: VendorAction) => void;
 }) {
   const { t, locale } = useI18n();
-  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
 
   return (
     <Card className="overflow-hidden">
@@ -94,9 +94,7 @@ function VendorTable({
                     </span>
                   </td>
                   <td className="px-5 py-4" dir="ltr">
-                    {vendor.subscription_end
-                      ? dateFormatter.format(new Date(`${vendor.subscription_end}T00:00:00`))
-                      : "—"}
+                    {formatDate(vendor.subscription_end, locale)}
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex flex-wrap gap-2">
