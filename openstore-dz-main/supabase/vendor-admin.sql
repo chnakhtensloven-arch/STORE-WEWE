@@ -48,8 +48,8 @@ create trigger create_vendor_after_signup
   after insert on auth.users
   for each row execute function public.create_vendor_for_new_user();
 
--- These functions expose auth.users emails and vendor updates only to the
--- explicitly designated administrator; the browser never accesses auth.users.
+-- These functions expose auth.users emails and vendor updates only to owners;
+-- the browser never accesses auth.users directly.
 
 create or replace function public.admin_list_vendors()
 returns table (
@@ -66,7 +66,7 @@ set search_path = ''
 as $$
 begin
   if auth.uid() is null
-     or (auth.jwt() ->> 'email') is distinct from 'chnakhtensloven@gmail.com' then
+     or public.has_admin_role(auth.uid(), array['owner']::public.admin_role[]) is not true then
     raise exception using errcode = '42501', message = 'Not authorized';
   end if;
 
@@ -88,7 +88,7 @@ declare
   affected_rows integer;
 begin
   if auth.uid() is null
-     or (auth.jwt() ->> 'email') is distinct from 'chnakhtensloven@gmail.com' then
+     or public.has_admin_role(auth.uid(), array['owner']::public.admin_role[]) is not true then
     raise exception using errcode = '42501', message = 'Not authorized';
   end if;
 
@@ -114,7 +114,7 @@ declare
   affected_rows integer;
 begin
   if auth.uid() is null
-     or (auth.jwt() ->> 'email') is distinct from 'chnakhtensloven@gmail.com' then
+     or public.has_admin_role(auth.uid(), array['owner']::public.admin_role[]) is not true then
     raise exception using errcode = '42501', message = 'Not authorized';
   end if;
 

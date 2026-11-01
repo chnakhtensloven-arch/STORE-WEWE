@@ -25,7 +25,6 @@ import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSlipsRouteImport } from './routes/admin.slips'
-import { Route as AdminVendorsRouteImport } from './routes/admin.vendors'
 import { Route as AdminWelcomeRouteImport } from './routes/admin.welcome'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -113,11 +112,6 @@ const AdminSlipsRoute = AdminSlipsRouteImport.update({
   path: '/slips',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminVendorsRoute = AdminVendorsRouteImport.update({
-  id: '/vendors',
-  path: '/vendors',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminWelcomeRoute = AdminWelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -165,7 +159,6 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/slips': typeof AdminSlipsRoute
-  '/admin/vendors': typeof AdminVendorsRoute
   '/admin/welcome': typeof AdminWelcomeRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -189,7 +182,6 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/slips': typeof AdminSlipsRoute
-  '/admin/vendors': typeof AdminVendorsRoute
   '/admin/welcome': typeof AdminWelcomeRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -215,7 +207,6 @@ export interface FileRoutesById {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/slips': typeof AdminSlipsRoute
-  '/admin/vendors': typeof AdminVendorsRoute
   '/admin/welcome': typeof AdminWelcomeRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -242,7 +233,6 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/slips'
-    | '/admin/vendors'
     | '/admin/welcome'
     | '/auth/confirm'
     | '/category/$slug'
@@ -266,7 +256,6 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/slips'
-    | '/admin/vendors'
     | '/admin/welcome'
     | '/auth/confirm'
     | '/category/$slug'
@@ -291,7 +280,6 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/slips'
-    | '/admin/vendors'
     | '/admin/welcome'
     | '/auth/confirm'
     | '/category/$slug'
@@ -431,13 +419,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSlipsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/vendors': {
-      id: '/admin/vendors'
-      path: '/vendors'
-      fullPath: '/admin/vendors'
-      preLoaderRoute: typeof AdminVendorsRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/welcome': {
       id: '/admin/welcome'
       path: '/welcome'
@@ -490,7 +471,6 @@ interface AdminRouteChildren {
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSlipsRoute: typeof AdminSlipsRoute
-  AdminVendorsRoute: typeof AdminVendorsRoute
   AdminWelcomeRoute: typeof AdminWelcomeRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductIdRoute: typeof AdminProductIdRoute
@@ -503,7 +483,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSlipsRoute: AdminSlipsRoute,
-  AdminVendorsRoute: AdminVendorsRoute,
   AdminWelcomeRoute: AdminWelcomeRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProductIdRoute: AdminProductIdRoute,

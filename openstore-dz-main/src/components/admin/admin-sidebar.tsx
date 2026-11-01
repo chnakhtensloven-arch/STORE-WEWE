@@ -9,7 +9,6 @@ import {
   Store,
   Tags,
   Truck,
-  Users,
   X,
 } from "lucide-react";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -34,7 +33,6 @@ import { toast } from "sonner";
 
 const LINKS = [
   { to: "/admin", labelKey: "admin.nav.overview", icon: ClipboardList, exact: true },
-  { to: "/admin/vendors", labelKey: "admin.nav.vendors", icon: Users, exact: false },
   { to: "/admin/products", labelKey: "admin.products.title", icon: Package, exact: false },
   { to: "/admin/categories", labelKey: "admin.nav.categories", icon: Tags, exact: false },
   { to: "/admin/reviews", labelKey: "admin.reviews.title", icon: Star, exact: false },
