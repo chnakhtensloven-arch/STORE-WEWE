@@ -40,7 +40,6 @@ function VendorDashboardPage() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      await navigate({ to: "/login" });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     }

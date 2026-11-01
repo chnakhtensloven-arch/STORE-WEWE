@@ -13,7 +13,16 @@ export const Route = createFileRoute("/login")({
 });
 
 type SignInOutcome =
-  { ok: true; destination: "/admin" | "/dashboard" } | { ok: false; error: string };
+  | { ok: true; destination: "/admin" | "/dashboard" }
+  | { ok: false; error: string; vendorUnauthorized?: boolean };
+
+async function rejectSignIn(error: string, vendorUnauthorized = false): Promise<SignInOutcome> {
+  const { error: signOutError } = await getSupabase().auth.signOut();
+  if (signOutError) {
+    return { ok: false, error: `${error} ${signOutError.message}`.trim() };
+  }
+  return { ok: false, error, vendorUnauthorized };
+}
 
 /**
  * Sign in, then settle what the account actually is.
@@ -39,8 +48,7 @@ async function signInAndResolveRole(email: string, password: string): Promise<Si
     .maybeSingle();
 
   if (roleError) {
-    await supabase.auth.signOut();
-    return { ok: false, error: roleError.message };
+    return rejectSignIn(roleError.message);
   }
   if (roleRow) return { ok: true, destination: "/admin" };
 
@@ -49,18 +57,18 @@ async function signInAndResolveRole(email: string, password: string): Promise<Si
   // appears now, so the claim has to happen at this point.
   const { data: exists, error: existsError } = await supabase.rpc("admin_exists");
   if (existsError) {
-    await supabase.auth.signOut();
-    return { ok: false, error: existsError.message };
+    return rejectSignIn(existsError.message);
   }
   if (exists === false) {
     const { error: claimError } = await supabase.rpc("claim_store");
     if (claimError) {
-      await supabase.auth.signOut();
-      return { ok: false, error: claimError.message };
+      return rejectSignIn(claimError.message);
     }
     return { ok: true, destination: "/admin" };
   }
 
+  // vendors stores the auth user ID, not a copied email. This RLS-protected
+  // lookup verifies the signed-in email's actual Auth identity.
   const { data: vendor, error: vendorError } = await supabase
     .from("vendors")
     .select("id")
@@ -68,13 +76,11 @@ async function signInAndResolveRole(email: string, password: string): Promise<Si
     .maybeSingle();
 
   if (vendorError) {
-    await supabase.auth.signOut();
-    return { ok: false, error: vendorError.message };
+    return rejectSignIn(vendorError.message);
   }
   if (vendor) return { ok: true, destination: "/dashboard" };
 
-  await supabase.auth.signOut();
-  return { ok: false, error: "This account is not a shop administrator." };
+  return rejectSignIn("", true);
 }
 
 /**
@@ -121,7 +127,7 @@ function LoginPage() {
     try {
       const outcome = await signInAndResolveRole(email, password);
       if (!outcome.ok) {
-        setError(outcome.error);
+        setError(outcome.vendorUnauthorized ? t("admin.login.vendorUnauthorized") : outcome.error);
         return;
       }
       await refreshRole();

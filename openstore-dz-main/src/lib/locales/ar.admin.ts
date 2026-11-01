@@ -6,6 +6,7 @@ export const arAdmin = {
   "admin.login.password": "كلمة المرور",
   "admin.login.submit": "دخول",
   "admin.login.notAdmin": "هذا الحساب ليس لمدير المتجر.",
+  "admin.login.vendorUnauthorized": "عذراً، هذا البريد غير مصرح له بالدخول",
   "admin.vendors.title": "البائعون",
   "admin.vendors.intro": "إدارة حالة اشتراك المتاجر وتواريخ انتهائه.",
   "admin.vendors.accessDenied": "ليس لديك صلاحية لعرض هذه الصفحة.",

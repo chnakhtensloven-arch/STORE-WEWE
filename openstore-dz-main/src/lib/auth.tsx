@@ -84,9 +84,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     const { error } = await getSupabase().auth.signOut();
-    if (error) throw error;
     setUser(null);
     setRole(null);
+    if (typeof window !== "undefined") {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+      window.location.href = "/login";
+    }
+    if (error) throw error;
   }, []);
 
   // Reads the session directly rather than the `user` state: right after a

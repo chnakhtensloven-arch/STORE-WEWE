@@ -6,6 +6,7 @@ export const enAdmin = {
   "admin.login.password": "Password",
   "admin.login.submit": "Sign in",
   "admin.login.notAdmin": "This account is not a shop administrator.",
+  "admin.login.vendorUnauthorized": "Sorry, this email is not authorized to sign in.",
   "admin.vendors.title": "Vendors",
   "admin.vendors.intro": "Manage vendor store status and subscription end dates.",
   "admin.vendors.accessDenied": "You are not allowed to view this page.",

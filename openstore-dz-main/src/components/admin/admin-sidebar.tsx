@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import {
   ChevronsLeft,
   ClipboardList,
@@ -54,13 +54,11 @@ export function AdminSidebar({
   onToggleCollapse: () => void;
 }) {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const { signOut } = useAuth();
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      await navigate({ to: "/login" });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     }

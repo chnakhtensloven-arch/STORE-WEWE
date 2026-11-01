@@ -6,6 +6,8 @@ export const frAdmin = {
   "admin.login.password": "Mot de passe",
   "admin.login.submit": "Se connecter",
   "admin.login.notAdmin": "Ce compte n'est pas un administrateur de la boutique.",
+  "admin.login.vendorUnauthorized":
+    "Désolé, cette adresse e-mail n’est pas autorisée à se connecter.",
   "admin.vendors.title": "Vendeurs",
   "admin.vendors.intro": "Gérez le statut des boutiques et la date de fin des abonnements.",
   "admin.vendors.accessDenied": "Vous n’êtes pas autorisé à consulter cette page.",
