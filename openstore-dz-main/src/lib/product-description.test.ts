@@ -46,6 +46,36 @@ describe("product description blocks", () => {
     expect(productDescriptionText(stored)).toBe("Intro\nwith line break\nDetails below");
   });
 
+  it("parses block documents with LF, CRLF, or no separator after the prefix", () => {
+    const payload = JSON.stringify({
+      version: 1,
+      blocks: [
+        { type: "text", text: "Product details" },
+        {
+          type: "image",
+          url: "https://example.com/size-guide.webp",
+          alt: "Size guide",
+        },
+      ],
+    });
+
+    for (const separator of ["\n", "\r\n", ""]) {
+      expect(
+        parseProductDescription(
+          `OPENSTORE-PRODUCT-DESCRIPTION:v1${separator}${payload}`,
+        ),
+      ).toEqual([
+        { id: "text-0", type: "text", text: "Product details" },
+        {
+          id: "image-1",
+          type: "image",
+          url: "https://example.com/size-guide.webp",
+          alt: "Size guide",
+        },
+      ]);
+    }
+  });
+
   it("falls back to plain text for malformed documents and rejects unsafe image URLs", () => {
     const malformed = "OPENSTORE-PRODUCT-DESCRIPTION:v1\nnot-json";
     expect(parseProductDescription(malformed)[0]).toMatchObject({

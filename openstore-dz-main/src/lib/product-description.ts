@@ -6,7 +6,7 @@ export type ProductDescriptionBlock =
 
 export type ProductDescription = ProductDescriptionBlock[];
 
-const PREFIX = "OPENSTORE-PRODUCT-DESCRIPTION:v1\n";
+const PREFIX = "OPENSTORE-PRODUCT-DESCRIPTION:v1";
 
 export function moveProductDescriptionBlock(
   blocks: ProductDescription,
@@ -43,7 +43,8 @@ export function parseProductDescription(value: string | null | undefined): Produ
   }
 
   try {
-    const parsed: unknown = JSON.parse(value.slice(PREFIX.length));
+    const payload = value.slice(PREFIX.length).replace(/^\r?\n/, "");
+    const parsed: unknown = JSON.parse(payload);
     if (!isRecord(parsed) || parsed.version !== 1 || !Array.isArray(parsed.blocks)) {
       return [{ id: "legacy-text-0", type: "text", text: value }];
     }
@@ -83,7 +84,7 @@ export function serializeProductDescription(blocks: ProductDescription): string 
       ? { type: block.type, text: block.text }
       : { type: block.type, url: block.url, alt: block.alt },
   );
-  return `${PREFIX}${JSON.stringify({ version: 1, blocks: content })}`;
+  return `${PREFIX}\n${JSON.stringify({ version: 1, blocks: content })}`;
 }
 
 /** Plain text for search-result metadata; image URLs and serialization are excluded. */

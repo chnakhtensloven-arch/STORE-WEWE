@@ -61,6 +61,12 @@ Development:
 A variable with no `VITE_` prefix never reaches the browser. If a secret ever appears in
 browser code, rotate it immediately. See `SECURITY.md`.
 
+Vercel applies the security headers defined in `vercel.json` to every route. The Content
+Security Policy allows the inline bootstrap and hydration scripts used by the app, and
+HTTPS/WSS connections and HTTPS images for each shop's configured Supabase project and
+store assets. If you deploy on another host, configure the same response headers there;
+HTML `<head>` metadata cannot replace these HTTP security headers.
+
 ### Claim the shop immediately
 
 Open `https://<your-domain>/setup` as soon as the first deploy finishes and create the
